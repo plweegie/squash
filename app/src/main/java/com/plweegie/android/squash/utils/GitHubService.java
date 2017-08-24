@@ -5,14 +5,15 @@
  */
 package com.plweegie.android.squash.utils;
 
+import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
-/**
- *
- * @author jan
- */
+
 public interface GitHubService {
-//    @GET("users/{username}/repos")
-//    Call<List>
+    @GET("users/{username}/repos")
+    Call<List<Repository>> getRepos(@Path("username") String userName,
+            @Query("per_page") int perPage);
 }
