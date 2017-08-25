@@ -6,57 +6,72 @@
     android:orientation="vertical"
     android:padding="16dp">
     
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_weight="1">
         
         <TextView
             android:id="@+id/repo_name_tv"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            android:layout_gravity="left"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:fontFamily="sans-serif-medium"
             android:textAppearance="?android:textAppearanceMedium"
             android:textStyle="bold" />
         
-<!--        <ImageView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@drawable/" />-->
-        
         <TextView
             android:id="@+id/stars_tv"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content" />
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_toLeftOf="@+id/stars_iv"
+            android:layout_centerVertical="true" />
         
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/stars_iv"
+            android:scaleType="centerInside"
+            android:layout_height="24dp"
+            android:layout_width="24dp"
+            android:layout_marginLeft="4dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_visibility_black_24dp" />
+        
+    </RelativeLayout>
     
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_weight="1">
         
         <TextView
             android:id="@+id/repo_language_tv"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            android:layout_gravity="left"
-            android:fontFamily="sans-serif-medium"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="sans-serif"
+            android:textStyle="italic"
             android:textAppearance="?android:textAppearanceSmall" />
-        
-<!--        <ImageView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@drawable/" />-->
         
         <TextView
             android:id="@+id/watchers_tv"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content" />
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_toLeftOf="@+id/watchers_iv"
+            android:layout_centerVertical="true" />
         
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/watchers_iv"
+            android:scaleType="centerCrop"
+            android:layout_height="24dp"
+            android:layout_width="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="4dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_star_rate_black_18dp" />
+        
+    </RelativeLayout>
             
 </LinearLayout>
