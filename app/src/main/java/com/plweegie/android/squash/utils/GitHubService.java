@@ -16,4 +16,8 @@ public interface GitHubService {
     @GET("users/{username}/repos")
     Call<List<Repository>> getRepos(@Path("username") String userName,
             @Query("per_page") int perPage);
+    
+    @GET("repos/{owner}/{repo}/commits")
+    Call<List<Commit>> getCommits(@Path("owner") String owner,
+            @Path("repo") String repo, @Query("per_page") int perPage);
 }

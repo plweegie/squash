@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import com.plweegie.android.squash.CommitListFragment;
+import com.plweegie.android.squash.FaveListFragment;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.RepoListFragment;
 
@@ -27,10 +28,15 @@ public class GithubPagerAdapter extends FragmentStatePagerAdapter {
     
     @Override
     public Fragment getItem(int position) {
-        if(position == 0) {
-            return RepoListFragment.newInstance();
-        } else {
-            return CommitListFragment.newInstance();
+        switch(position) {
+            case 0:
+                return RepoListFragment.newInstance();
+            case 1:
+                return FaveListFragment.newInstance();
+            case 2:
+                return CommitListFragment.newInstance();
+            default:
+                throw new IllegalArgumentException("Position error in ViewPager");
         }
     }
     

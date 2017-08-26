@@ -3,4 +3,7 @@
     <string name="list_repos">Repositories</string>
     <string name="list_faves">Favorites</string>
     <string name="list_commits">Commits</string>
+    
+    <!-- Commit info for CommitListFragment -->
+    <string name="commit_info">By &lt;b>%1$s&lt;/b> on %2$s</string>
 </resources>
