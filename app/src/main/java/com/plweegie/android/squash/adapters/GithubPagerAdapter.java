@@ -8,13 +8,13 @@ package com.plweegie.android.squash.adapters;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import com.plweegie.android.squash.CommitListFragment;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.RepoListFragment;
 
 
-public class GithubPagerAdapter extends FragmentPagerAdapter {
+public class GithubPagerAdapter extends FragmentStatePagerAdapter {
     
     private Context mContext;
     private int[] mTabTitles = new int[] {R.string.list_repos, R.string.list_faves,
