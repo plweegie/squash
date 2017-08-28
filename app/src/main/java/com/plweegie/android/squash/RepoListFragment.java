@@ -81,6 +81,7 @@ public class RepoListFragment extends Fragment {
                 
                 if (mAdapter == null) {
                     mAdapter = new RepoAdapter(getActivity(), mRepos);
+                    mAdapter.setHasStableIds(true);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     mAdapter.setContent(mRepos);

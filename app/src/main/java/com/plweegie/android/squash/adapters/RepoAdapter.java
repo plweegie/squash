@@ -6,10 +6,14 @@
 package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.utils.Repository;
 import java.util.List;
@@ -46,7 +50,11 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         mRepos = repos;
     }
     
-    public class RepoHolder extends RecyclerView.ViewHolder {
+    public class RepoHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener {
+        
+        private Repository mRepo;
+        private DatabaseReference mDatabase;
         
         private TextView mNameTextView;
         private TextView mLangTextView;
@@ -56,6 +64,8 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         public RepoHolder(LayoutInflater inflater, ViewGroup parent,
                 int layoutResId) {
             super(inflater.inflate(layoutResId, parent, false));
+            itemView.setOnClickListener(this);
+            mDatabase = FirebaseDatabase.getInstance().getReference("repositories");
             
             mNameTextView = (TextView) itemView.findViewById(R.id.repo_name_tv);
             mLangTextView = (TextView) itemView.findViewById(R.id.repo_language_tv);
@@ -64,10 +74,29 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         }
         
         public void bind(Repository repo) {
+            
+            mRepo = repo;
+            
             mNameTextView.setText(repo.getName());
             mLangTextView.setText(repo.getLanguage());
             mStarCountTextView.setText(repo.getStargazersCount().toString());
             mWatchCountTextView.setText(repo.getWatchersCount().toString());
         }
+        
+        @Override
+        public void onClick(View view) {
+            
+            int position = getAdapterPosition();
+            mDatabase.child(String.valueOf(position))
+                    .setValue(mRepo);
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .edit()
+                    .putBoolean(String.valueOf(position), true)
+                    .apply();
+        }
+        
+//        private void toggleFavorite() {
+//            mRepo.setIsFavorite(!mRepo.isFavorite());
+//        }
     }
 }

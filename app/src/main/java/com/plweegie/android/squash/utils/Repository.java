@@ -23,6 +23,12 @@ public class Repository {
     @SerializedName("watchers_count")
     @Expose
     private Integer watchersCount;
+    
+    private boolean isFavorite;
+    
+    public Repository() {
+        this.isFavorite = false;
+    }
 
     public String getName() {
         return name;
@@ -54,5 +60,13 @@ public class Repository {
 
     public void setWatchersCount(Integer watchersCount) {
         this.watchersCount = watchersCount;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
     }
 }
