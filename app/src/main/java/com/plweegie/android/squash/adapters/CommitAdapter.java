@@ -49,6 +49,11 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.CommitHold
         return mCommits.size();
     }
     
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+    
     public void setContent(List<Commit> commits) {
         mCommits = commits;
     }

@@ -81,6 +81,7 @@ public class CommitListFragment extends Fragment {
                 
                 if (mAdapter == null) {
                     mAdapter = new CommitAdapter(getActivity(), mCommits);
+                    mAdapter.setHasStableIds(true);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     mAdapter.setContent(mCommits);
