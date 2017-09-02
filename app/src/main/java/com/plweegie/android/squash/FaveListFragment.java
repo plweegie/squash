@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +37,7 @@ public class FaveListFragment extends Fragment {
     private List<Repository> mFaveRepos;
     private RecyclerView mRecyclerView;
     private RepoAdapter mAdapter;
+    private ProgressBar mIndicator;
     
     private DatabaseReference mDatabase;
     
@@ -58,6 +60,8 @@ public class FaveListFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference("repositories");
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.commits_recycler_view);
+        mIndicator = (ProgressBar) v.findViewById(R.id.load_indicator);
+        mIndicator.setVisibility(View.GONE);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -68,7 +72,7 @@ public class FaveListFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 
-                if (mFaveRepos != null) {
+                if (!mFaveRepos.isEmpty()) {
                     mFaveRepos.clear();
                 }
                 
@@ -96,6 +100,7 @@ public class FaveListFragment extends Fragment {
     
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fave_list_menu, menu);
     }
     

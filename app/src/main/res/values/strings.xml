@@ -4,6 +4,7 @@
     <string name="list_faves">Favorites</string>
     <string name="list_commits">Commits</string>
     <string name="clear_menu_label">Clear all</string>
+    <string name="search_hint">Search user...</string>
     
     <!-- Commit info for CommitListFragment -->
     <string name="commit_info">By &lt;b>%1$s&lt;/b> on %2$s</string>

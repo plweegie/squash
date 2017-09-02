@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import com.plweegie.android.squash.adapters.CommitAdapter;
 import com.plweegie.android.squash.utils.GitHubService;
 import com.plweegie.android.squash.utils.Commit;
@@ -32,6 +33,7 @@ public class CommitListFragment extends Fragment {
     
     private List<Commit> mCommits;
     private RecyclerView mRecyclerView;
+    private ProgressBar mIndicator;
     private CommitAdapter mAdapter;
     
     private Retrofit mRetrofit;
@@ -54,6 +56,8 @@ public class CommitListFragment extends Fragment {
         
         mCommits = new ArrayList<>();
         mRecyclerView = (RecyclerView) v.findViewById(R.id.commits_recycler_view);
+        mIndicator = (ProgressBar) v.findViewById(R.id.load_indicator);
+        mIndicator.setVisibility(View.GONE);
         
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
