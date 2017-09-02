@@ -22,7 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.plweegie.android.squash.adapters.FaveAdapter;
+import com.plweegie.android.squash.adapters.RepoAdapter;
 import com.plweegie.android.squash.utils.Repository;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class FaveListFragment extends Fragment {
     
     private List<Repository> mFaveRepos;
     private RecyclerView mRecyclerView;
-    private FaveAdapter mAdapter;
+    private RepoAdapter mAdapter;
     
     private DatabaseReference mDatabase;
     
@@ -76,7 +76,8 @@ public class FaveListFragment extends Fragment {
                     mFaveRepos.add(child.getValue(Repository.class));
                 }
                 if (mAdapter == null) {
-                    mAdapter = new FaveAdapter(getActivity(), mFaveRepos);
+                    mAdapter = new RepoAdapter(getActivity(), mFaveRepos,
+                            RepoAdapter.FAVES_LIST_MODE);
                     mAdapter.setHasStableIds(true);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {

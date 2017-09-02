@@ -80,7 +80,8 @@ public class RepoListFragment extends Fragment {
                 mRepos.addAll(response.body());
                 
                 if (mAdapter == null) {
-                    mAdapter = new RepoAdapter(getActivity(), mRepos);
+                    mAdapter = new RepoAdapter(getActivity(), mRepos,
+                            RepoAdapter.REPOS_LIST_MODE);
                     mAdapter.setHasStableIds(true);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {

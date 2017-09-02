@@ -7,6 +7,7 @@ package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,18 +23,31 @@ import java.util.List;
 
 public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
     
+    public static final int REPOS_LIST_MODE = 0;
+    public static final int FAVES_LIST_MODE = 1;
+    
     private List<Repository> mRepos;
     private Context mContext;
+    private int mDisplayMode;
     
-    public RepoAdapter(Context context, List<Repository> repos) {
+    public RepoAdapter(Context context, List<Repository> repos, int mode) {
         mRepos = repos;
         mContext = context;
+        mDisplayMode = mode;
     }
 
     @Override
     public RepoHolder onCreateViewHolder(ViewGroup vg, int i) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        return new RepoHolder(inflater, vg, R.layout.repo_view_holder);
+        
+        switch(mDisplayMode) {
+            case REPOS_LIST_MODE:
+                return new RepoHolder(inflater, vg, R.layout.repo_view_holder);
+            case FAVES_LIST_MODE:
+                return new FaveHolder(inflater, vg, R.layout.repo_view_holder);
+            default:
+                throw new IllegalArgumentException("Could not initialize view holders");
+        }
     }
 
     @Override
@@ -58,14 +72,14 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
     
     public class RepoHolder extends RecyclerView.ViewHolder {
         
-        private Repository mRepo;
-        private DatabaseReference mDatabase;
+        protected Repository mRepo;
+        protected DatabaseReference mDatabase;
         
-        private TextView mNameTextView;
-        private TextView mLangTextView;
-        private TextView mStarCountTextView;
-        private TextView mWatchCountTextView;
-        private ImageView mFavoriteImgView;
+        protected TextView mNameTextView;
+        protected TextView mLangTextView;
+        protected TextView mStarCountTextView;
+        protected TextView mWatchCountTextView;
+        protected ImageView mFavoriteImgView;
         
         public RepoHolder(LayoutInflater inflater, ViewGroup parent,
                 int layoutResId) {
@@ -97,6 +111,36 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
                             .setValue(mRepo);
                     Toast.makeText(mContext, mRepo.getName() + " added to Favorites",
                             Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+    
+    public class FaveHolder extends RepoHolder {
+        
+        public FaveHolder(LayoutInflater inflater, ViewGroup parent,
+                int layoutResId) {
+            super(inflater, parent, layoutResId);
+        }
+        
+        @Override
+        public void bind(Repository repo) {
+            mRepo = repo;
+
+            mNameTextView.setText(repo.getName());
+            mLangTextView.setText(repo.getLanguage());
+            mStarCountTextView.setText(repo.getStargazersCount().toString());
+            mWatchCountTextView.setText(repo.getWatchersCount().toString());
+
+            mFavoriteImgView.setImageResource(R.drawable.ic_delete_black_24dp);
+            mFavoriteImgView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    mDatabase.child(String.valueOf(mRepo.getId()))
+                            .removeValue();
+                    mRepos.remove(position);
+                    notifyDataSetChanged();
                 }
             });
         }
