@@ -12,6 +12,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.firebase.database.DataSnapshot;
@@ -64,6 +67,11 @@ public class FaveListFragment extends Fragment {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                
+                if (mFaveRepos != null) {
+                    mFaveRepos.clear();
+                }
+                
                 for (DataSnapshot child: snapshot.getChildren()) {
                     mFaveRepos.add(child.getValue(Repository.class));
                 }
@@ -83,5 +91,23 @@ public class FaveListFragment extends Fragment {
             }
         });
         return v;
+    }
+    
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fave_list_menu, menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.clear_db:
+                mDatabase.setValue(null);
+                mFaveRepos.clear();
+                mAdapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -6,15 +6,13 @@
 package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.preference.PreferenceManager;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.plweegie.android.squash.R;
@@ -58,8 +56,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         mRepos = repos;
     }
     
-    public class RepoHolder extends RecyclerView.ViewHolder implements
-            View.OnClickListener {
+    public class RepoHolder extends RecyclerView.ViewHolder {
         
         private Repository mRepo;
         private DatabaseReference mDatabase;
@@ -73,7 +70,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         public RepoHolder(LayoutInflater inflater, ViewGroup parent,
                 int layoutResId) {
             super(inflater.inflate(layoutResId, parent, false));
-            itemView.setOnClickListener(this);
+
             mDatabase = FirebaseDatabase.getInstance().getReference("repositories");
             
             mNameTextView = (TextView) itemView.findViewById(R.id.repo_name_tv);
@@ -92,34 +89,16 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
             mStarCountTextView.setText(repo.getStargazersCount().toString());
             mWatchCountTextView.setText(repo.getWatchersCount().toString());
             
-            if (repo.isFavorite()) {
-                mFavoriteImgView.setImageResource(R.drawable.ic_favorite_black_24dp);
-                mFavoriteImgView.setColorFilter(ResourcesCompat
-                        .getColor(mContext.getResources(), R.color.colorAccent, null),
-                        PorterDuff.Mode.SRC_IN);
-            } else {
-                mFavoriteImgView.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                mFavoriteImgView.setColorFilter(ResourcesCompat
-                        .getColor(mContext.getResources(), R.color.colorInactive, null),
-                        PorterDuff.Mode.SRC_IN);
-            }
-        }
-        
-        @Override
-        public void onClick(View view) {
-            int position = getAdapterPosition();
-            mRepo.setIsFavorite(!mRepo.isFavorite());
-            
-            if (mRepo.isFavorite()) {
-                mDatabase.child(String.valueOf(position))
-                        .setValue(mRepo);
-                PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .edit()
-                        .putBoolean(String.valueOf(position), true)
-                        .apply();
-                notifyItemRemoved(position);
-                mRepos.remove(position);
-            }
+            mFavoriteImgView.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
+            mFavoriteImgView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDatabase.child(String.valueOf(mRepo.getId()))
+                            .setValue(mRepo);
+                    Toast.makeText(mContext, mRepo.getName() + " added to Favorites",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }

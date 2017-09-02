@@ -5,9 +5,7 @@
  */
 package com.plweegie.android.squash;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -80,14 +78,6 @@ public class RepoListFragment extends Fragment {
             public void onResponse(Call<List<Repository>> call,
                     Response<List<Repository>> response) {
                 mRepos.addAll(response.body());
-                
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(getActivity());
-                for (int i = 0; i < mRepos.size(); i++) {
-                    if (prefs.contains(String.valueOf(i))) {
-                        mRepos.get(i).setIsFavorite(true);
-                    }
-                }
                 
                 if (mAdapter == null) {
                     mAdapter = new RepoAdapter(getActivity(), mRepos);

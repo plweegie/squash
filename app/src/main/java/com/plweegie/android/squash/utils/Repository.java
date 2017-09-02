@@ -11,6 +11,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Repository {
     
+    @SerializedName("id")
+    @Expose
+    private long id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -24,10 +27,16 @@ public class Repository {
     @Expose
     private Integer watchersCount;
     
-    private boolean isFavorite;
-    
     public Repository() {
-        this.isFavorite = false;
+        
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -60,13 +69,5 @@ public class Repository {
 
     public void setWatchersCount(Integer watchersCount) {
         this.watchersCount = watchersCount;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setIsFavorite(boolean isFavorite) {
-        this.isFavorite = isFavorite;
     }
 }
