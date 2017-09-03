@@ -40,6 +40,7 @@ public class FaveListFragment extends Fragment {
     private ProgressBar mIndicator;
     
     private DatabaseReference mDatabase;
+    private ValueEventListener mDbListener;
     
     public static FaveListFragment newInstance() {
         return new FaveListFragment();
@@ -56,9 +57,6 @@ public class FaveListFragment extends Fragment {
             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.commit_list_fragment, parent, false);
         
-        mFaveRepos = new ArrayList<>();
-        mDatabase = FirebaseDatabase.getInstance().getReference("repositories");
-
         mRecyclerView = (RecyclerView) v.findViewById(R.id.commits_recycler_view);
         mIndicator = (ProgressBar) v.findViewById(R.id.load_indicator);
         mIndicator.setVisibility(View.GONE);
@@ -68,15 +66,25 @@ public class FaveListFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
         
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        return v;
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        
+        mFaveRepos = new ArrayList<>();
+        
+        mDatabase = FirebaseDatabase.getInstance().getReference("repositories");
+        mDbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                
+
                 if (!mFaveRepos.isEmpty()) {
                     mFaveRepos.clear();
                 }
-                
-                for (DataSnapshot child: snapshot.getChildren()) {
+
+                for (DataSnapshot child : snapshot.getChildren()) {
                     mFaveRepos.add(child.getValue(Repository.class));
                 }
                 if (mAdapter == null) {
@@ -89,13 +97,20 @@ public class FaveListFragment extends Fragment {
                     mAdapter.notifyDataSetChanged();
                 }
             }
-            
+
             @Override
             public void onCancelled(DatabaseError error) {
                 Log.e("FaveListFragment", error.toException().toString());
             }
-        });
-        return v;
+        };
+        
+        mDatabase.addValueEventListener(mDbListener);
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        mDatabase.removeEventListener(mDbListener);
     }
     
     @Override

@@ -26,6 +26,9 @@ public class Repository {
     @SerializedName("watchers_count")
     @Expose
     private Integer watchersCount;
+    @SerializedName("owner")
+    @Expose
+    private Owner owner;
     
     public Repository() {
         
@@ -69,5 +72,28 @@ public class Repository {
 
     public void setWatchersCount(Integer watchersCount) {
         this.watchersCount = watchersCount;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+    
+    public static class Owner {
+        
+        @SerializedName("login")
+        @Expose
+        private String login;
+
+        public String getLogin() {
+            return login;
+        }
+
+        public void setLogin(String login) {
+            this.login = login;
+        }
     }
 }

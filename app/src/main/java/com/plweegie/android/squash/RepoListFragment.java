@@ -38,7 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RepoListFragment extends Fragment {
     
     public static final String GITHUB_BASE_URL = "https://api.github.com/";
-    public static final int MAXIMUM_LIST_LENGTH = 50;
+    public static final int MAXIMUM_LIST_LENGTH = 10;
     
     private List<Repository> mRepos;
     private RecyclerView mRecyclerView;
