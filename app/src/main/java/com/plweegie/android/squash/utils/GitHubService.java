@@ -5,6 +5,8 @@
  */
 package com.plweegie.android.squash.utils;
 
+import com.plweegie.android.squash.data.RepoEntry;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,8 +16,8 @@ import retrofit2.http.Query;
 
 public interface GitHubService {
     @GET("users/{username}/repos")
-    Call<List<Repository>> getRepos(@Path("username") String userName,
-            @Query("per_page") int perPage);
+    Call<List<RepoEntry>> getRepos(@Path("username") String userName,
+                                   @Query("per_page") int perPage);
     
     @GET("repos/{owner}/{repo}/commits")
     Call<List<Commit>> getCommits(@Path("owner") String owner,

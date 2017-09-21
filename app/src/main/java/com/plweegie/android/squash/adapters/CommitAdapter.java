@@ -67,8 +67,8 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.CommitHold
                 int layoutResId) {
             super(inflater.inflate(layoutResId, parent, false));
             
-            mMessageTextView = (TextView) itemView.findViewById(R.id.commit_message_tv);
-            mInfoTextView = (TextView) itemView.findViewById(R.id.commit_info_tv);
+            mMessageTextView = itemView.findViewById(R.id.commit_message_tv);
+            mInfoTextView = itemView.findViewById(R.id.commit_info_tv);
         }
         
         public void bind(Commit commit) {

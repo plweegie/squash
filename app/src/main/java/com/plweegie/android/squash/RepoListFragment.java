@@ -22,10 +22,18 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.plweegie.android.squash.adapters.RepoAdapter;
+import com.plweegie.android.squash.data.RepoDatabase;
+import com.plweegie.android.squash.data.RepoEntry;
+import com.plweegie.android.squash.data.RepoRepository;
+import com.plweegie.android.squash.utils.AppExecutors;
 import com.plweegie.android.squash.utils.GitHubService;
+import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.QueryPreferences;
-import com.plweegie.android.squash.utils.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -35,18 +43,18 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class RepoListFragment extends Fragment {
+public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapterOnClickHandler {
     
     public static final String GITHUB_BASE_URL = "https://api.github.com/";
     public static final int MAXIMUM_LIST_LENGTH = 10;
     
-    private List<Repository> mRepos;
+    private List<RepoEntry> mRepos;
+    private RepoRepository mDataRepository;
     private RecyclerView mRecyclerView;
     private RepoAdapter mAdapter;
     private ProgressBar mIndicator;
     private InputMethodManager mImm;
-    
-    private Retrofit mRetrofit;
+
     private GitHubService mService;
     
     public static RepoListFragment newInstance() {
@@ -57,6 +65,7 @@ public class RepoListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mDataRepository = Injectors.provideRepository(getActivity());
     }
     
     @Override
@@ -67,20 +76,21 @@ public class RepoListFragment extends Fragment {
         mImm = (InputMethodManager) getActivity().getSystemService(Context
                 .INPUT_METHOD_SERVICE);
         mRepos = new ArrayList<>();
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.commits_recycler_view);
-        mIndicator = (ProgressBar) v.findViewById(R.id.load_indicator);
+        mRecyclerView = v.findViewById(R.id.commits_recycler_view);
+        mIndicator = v.findViewById(R.id.load_indicator);
         mIndicator.setVisibility(View.GONE);
         
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
-        
-        mRetrofit = new Retrofit.Builder()
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(GITHUB_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-        mService = mRetrofit.create(GitHubService.class);
+        mService = retrofit.create(GitHubService.class);
         updateUI();
         
         return v;
@@ -124,16 +134,22 @@ public class RepoListFragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onItemClick(int position) {
+        mDataRepository.addFavorite(mRepos.get(position));
+        Log.d("RepoListFragment", "pos " + position + " clicked");
+    }
     
     public void updateUI() {
         
         final String apiQuery = QueryPreferences.getStoredQuery(getActivity());
-        Call<List<Repository>> call = mService.getRepos(apiQuery, MAXIMUM_LIST_LENGTH);
+        Call<List<RepoEntry>> call = mService.getRepos(apiQuery, MAXIMUM_LIST_LENGTH);
 
-        call.enqueue(new Callback<List<Repository>>() {
+        call.enqueue(new Callback<List<RepoEntry>>() {
             @Override
-            public void onResponse(Call<List<Repository>> call,
-                    Response<List<Repository>> response) {
+            public void onResponse(Call<List<RepoEntry>> call,
+                    Response<List<RepoEntry>> response) {
                 
                 if (response.body() == null) {
                     Toast.makeText(getActivity(), "No repositories found for " +
@@ -148,8 +164,7 @@ public class RepoListFragment extends Fragment {
                 mRepos.addAll(response.body());
                 
                 if (mAdapter == null) {
-                    mAdapter = new RepoAdapter(getActivity(), mRepos,
-                            RepoAdapter.REPOS_LIST_MODE);
+                    mAdapter = new RepoAdapter(getActivity(), mRepos, RepoListFragment.this);
                     mAdapter.setHasStableIds(true);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
@@ -161,7 +176,7 @@ public class RepoListFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Repository>> call, Throwable t) {
+            public void onFailure(Call<List<RepoEntry>> call, Throwable t) {
                 Log.e("RepoListFragment", "Retrofit error: " + t);
             }
         });

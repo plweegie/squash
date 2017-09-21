@@ -21,9 +21,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.plweegie.android.squash.adapters.CommitAdapter;
+import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.utils.GitHubService;
 import com.plweegie.android.squash.utils.Commit;
-import com.plweegie.android.squash.utils.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -33,13 +34,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class CommitListFragment extends Fragment {
+public class
+CommitListFragment extends Fragment {
     
     public static final String GITHUB_BASE_URL = "https://api.github.com/";
     public static final int MAXIMUM_LIST_LENGTH = 5;
     
     private List<Commit> mCommits;
-    private List<Repository> mFaveRepos;
+    private List<RepoEntry> mFaveRepos;
     
     private RecyclerView mRecyclerView;
     private ProgressBar mIndicator;
@@ -65,8 +67,8 @@ public class CommitListFragment extends Fragment {
             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.commit_list_fragment, parent, false);
         
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.commits_recycler_view);
-        mIndicator = (ProgressBar) v.findViewById(R.id.load_indicator);
+        mRecyclerView = v.findViewById(R.id.commits_recycler_view);
+        mIndicator = v.findViewById(R.id.load_indicator);
         mIndicator.setVisibility(View.GONE);
         
         mRecyclerView.setHasFixedSize(true);
@@ -99,7 +101,7 @@ public class CommitListFragment extends Fragment {
                 }
 
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    mFaveRepos.add(child.getValue(Repository.class));
+                    mFaveRepos.add(child.getValue(RepoEntry.class));
                 }
                 updateUI();
             }
@@ -121,7 +123,7 @@ public class CommitListFragment extends Fragment {
     
     public void updateUI() {
         
-        for (Repository repo: mFaveRepos) {
+        for (RepoEntry repo: mFaveRepos) {
             String repoName = repo.getName();
             String repoOwner = repo.getOwner().getLogin();
             
