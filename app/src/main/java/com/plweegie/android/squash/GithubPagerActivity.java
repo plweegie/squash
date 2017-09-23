@@ -29,6 +29,8 @@ public class GithubPagerActivity  extends AppCompatActivity {
                 GithubPagerActivity.this);
         
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+        
         mTabLayout.setupWithViewPager(mViewPager);
     }
 }

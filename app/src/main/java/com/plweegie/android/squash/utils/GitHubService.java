@@ -5,6 +5,7 @@
  */
 package com.plweegie.android.squash.utils;
 
+import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface GitHubService {
     
     @GET("repos/{owner}/{repo}/commits")
     Call<List<Commit>> getCommits(@Path("owner") String owner,
-            @Path("repo") String repo, @Query("per_page") int perPage);
+                                  @Path("repo") String repo, @Query("per_page") int perPage);
 }

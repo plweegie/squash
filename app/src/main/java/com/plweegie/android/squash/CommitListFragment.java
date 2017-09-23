@@ -15,18 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 import com.plweegie.android.squash.adapters.CommitAdapter;
+import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
+import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.utils.GitHubService;
-import com.plweegie.android.squash.utils.Commit;
+import com.plweegie.android.squash.utils.Injectors;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,12 +45,13 @@ CommitListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ProgressBar mIndicator;
     private CommitAdapter mAdapter;
-    
-    private DatabaseReference mDatabase;
-    private ValueEventListener mDbListener;
+
+    private RepoRepository mDataRepository;
     private Retrofit mRetrofit;
     private GitHubService mService;
-    
+
+    private boolean isViewShown = false;
+
     public static CommitListFragment newInstance() {
         return new CommitListFragment();
     }
@@ -60,6 +60,7 @@ CommitListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mDataRepository = Injectors.provideRepository(getActivity());
     }
     
     @Override
@@ -81,48 +82,42 @@ CommitListFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mService = mRetrofit.create(GitHubService.class);
-        
+
+        mFaveRepos = new ArrayList<>();
+        mCommits = new ArrayList<>();
+
+        if (!isViewShown) {
+            updateUI();
+        }
+
         return v;
     }
-    
-    @Override
-    public void onResume() {
-        super.onResume();
-        
-        mCommits = new ArrayList<>();
-        mFaveRepos = new ArrayList<>();
-        
-        mDatabase = FirebaseDatabase.getInstance().getReference("repositories");
-        mDbListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!mFaveRepos.isEmpty()) {
-                    mFaveRepos.clear();
-                }
 
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    mFaveRepos.add(child.getValue(RepoEntry.class));
-                }
-                updateUI();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.e("CommitListFragment", error.toException().toString());
-            }
-        };
-        
-        mDatabase.addValueEventListener(mDbListener);
-    }
-    
     @Override
-    public void onPause() {
-        super.onPause();
-        mDatabase.removeEventListener(mDbListener);
+    public void setUserVisibleHint(boolean isVisible) {
+        super.setUserVisibleHint(isVisible);
+        if (getView() != null) {
+            isViewShown = true;
+            updateUI();
+        } else {
+            isViewShown = false;
+        }
     }
-    
+
     public void updateUI() {
-        
+
+        Log.d("CommitList", "UpdateUI called");
+        mCommits.clear();
+
+        if (mAdapter != null && mFaveRepos.size() == 0) {
+            mAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        mDataRepository.getAllFavorites().observe(this, repoEntries -> {
+            mFaveRepos = repoEntries;
+        });
+
         for (RepoEntry repo: mFaveRepos) {
             String repoName = repo.getName();
             String repoOwner = repo.getOwner().getLogin();
@@ -134,9 +129,6 @@ CommitListFragment extends Fragment {
                 @Override
                 public void onResponse(Call<List<Commit>> call,
                         Response<List<Commit>> response) {
-                    if (!mCommits.isEmpty()) {
-                        mCommits.clear();
-                    }
                     mCommits.addAll(response.body());
 
                     if (mAdapter == null) {
@@ -144,9 +136,9 @@ CommitListFragment extends Fragment {
                         mAdapter.setHasStableIds(true);
                         mRecyclerView.setAdapter(mAdapter);
                     } else {
-                        mAdapter.setContent(mCommits);
                         mAdapter.notifyDataSetChanged();
                     }
+                    Log.d("CommitList", mCommits.size() + " commits");
                 }
 
                 @Override
@@ -154,6 +146,8 @@ CommitListFragment extends Fragment {
                     Log.e("CommitListFragment", "Retrofit error: " + t);
                 }
             });
+
+
         }
     }
 }

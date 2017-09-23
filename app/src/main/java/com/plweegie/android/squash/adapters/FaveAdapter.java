@@ -24,9 +24,11 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
 
     private List<RepoEntry> mRepos;
     private Context mContext;
+    private FaveAdapterOnClickHandler mClickHandler;
 
-    public FaveAdapter(Context context) {
+    public FaveAdapter(Context context, FaveAdapterOnClickHandler clickHandler) {
         mContext = context;
+        mClickHandler = clickHandler;
     }
 
     @Override
@@ -56,6 +58,10 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
     public void setContent(List<RepoEntry> repos) {
         mRepos = repos;
         notifyDataSetChanged();
+    }
+
+    public interface FaveAdapterOnClickHandler {
+        void onItemClick(long repoId);
     }
 
     public class FaveHolder extends RecyclerView.ViewHolder {
@@ -89,9 +95,7 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    //TODO remove from db
-                    mRepos.remove(position);
-                    notifyDataSetChanged();
+                    mClickHandler.onItemClick(mRepos.get(position).getRepoId());
                 }
             });
         }

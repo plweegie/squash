@@ -14,7 +14,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.plweegie.android.squash.R;
-import com.plweegie.android.squash.utils.Commit;
+import com.plweegie.android.squash.data.Commit;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,19 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.plweegie.android.squash.utils;
+package com.plweegie.android.squash.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- *
- * @author jan
+ * Created by jan on 22/09/17.
  */
+
 public class Commit {
-    
+
     @SerializedName("commit")
     @Expose
     private CommitBody commitBody;
@@ -47,10 +42,10 @@ public class Commit {
     public void setAuthor(Author author) {
         this.author = author;
     }
-    
-    
+
+
     public static class CommitBody {
-        
+
         @SerializedName("author")
         @Expose
         private CommitBodyAuthor commitBodyAuthor;
@@ -73,9 +68,9 @@ public class Commit {
         public void setMessage(String message) {
             this.message = message;
         }
-        
+
         public static class CommitBodyAuthor{
-            
+
             @SerializedName("date")
             @Expose
             private String date;
@@ -89,9 +84,9 @@ public class Commit {
             }
         }
     }
-    
+
     public static class Author {
-        
+
         @SerializedName("login")
         @Expose
         private String login;

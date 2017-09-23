@@ -20,20 +20,19 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.plweegie.android.squash.adapters.FaveAdapter;
-import com.plweegie.android.squash.data.RepoEntry;
+import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.viewmodels.FaveListViewModel;
 import com.plweegie.android.squash.viewmodels.FaveListViewModelFactory;
-
-import java.util.List;
 
 /**
  *
  * @author jan
  */
-public class FaveListFragment extends Fragment {
+public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapterOnClickHandler {
     
     private RecyclerView mRecyclerView;
+    private RepoRepository mDataRepository;
     private FaveAdapter mAdapter;
     private ProgressBar mIndicator;
     private FaveListViewModel mViewModel;
@@ -47,8 +46,8 @@ public class FaveListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        FaveListViewModelFactory factory = new FaveListViewModelFactory(
-                Injectors.provideRepository(getActivity()));
+        mDataRepository = Injectors.provideRepository(getActivity());
+        FaveListViewModelFactory factory = new FaveListViewModelFactory(mDataRepository);
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(FaveListViewModel.class);
     }
     
@@ -66,7 +65,7 @@ public class FaveListFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
 
-        mAdapter = new FaveAdapter(getActivity());
+        mAdapter = new FaveAdapter(getActivity(), FaveListFragment.this);
         mRecyclerView.setAdapter(mAdapter);
 
         mViewModel.getFaveList().observe(this, repoEntries -> {
@@ -74,6 +73,11 @@ public class FaveListFragment extends Fragment {
         });
         
         return v;
+    }
+
+    @Override
+    public void onItemClick(long repoId) {
+        mDataRepository.deleteRepo(repoId);
     }
     
     @Override
@@ -86,8 +90,7 @@ public class FaveListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.clear_db:
-                //TODO Clear db
-                mAdapter.notifyDataSetChanged();
+                mDataRepository.deleteAllRepos();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -44,6 +44,14 @@ public class RepoRepository {
     }
 
     public void deleteRepo(long repoId) {
-        mRepoDao.deleteSelected(repoId);
+        mExecutors.diskIO().execute(() -> {
+            mRepoDao.deleteSelected(repoId);
+        });
+    }
+
+    public void deleteAllRepos() {
+        mExecutors.diskIO().execute(() -> {
+            mRepoDao.deleteAll();
+        });
     }
 }
