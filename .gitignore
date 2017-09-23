@@ -1,7 +1,8 @@
 *.iml
 .gradle
-./gradle
-/.nb-gradle
+.idea/
+.nb-gradle/
+projectFilesBackup/
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
