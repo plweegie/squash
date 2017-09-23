@@ -8,4 +8,3 @@ You will need an up-to-date version of Android Studio and a phone running Androi
 ## TODO
 * Docs
 * Add sorting to repo and commit lists
-* Use ButterKnife for view binding
