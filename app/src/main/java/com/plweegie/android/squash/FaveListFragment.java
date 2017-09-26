@@ -54,7 +54,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent,
             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.commit_list_fragment, parent, false);
+        View v = inflater.inflate(R.layout.list_fragment, parent, false);
         
         mRecyclerView = v.findViewById(R.id.commits_recycler_view);
         mIndicator = v.findViewById(R.id.load_indicator);

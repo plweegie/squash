@@ -6,6 +6,7 @@
 package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.plweegie.android.squash.LastCommitDetailsActivity;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -89,6 +90,16 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
             mLangTextView.setText(repo.getLanguage());
             mStarCountTextView.setText(Integer.toString(repo.getStargazersCount()));
             mWatchCountTextView.setText(Integer.toString(repo.getWatchersCount()));
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Intent intent = LastCommitDetailsActivity.newIntent(mContext,
+                            new String[] {repo.getOwner().getLogin(), repo.getName()});
+                    mContext.startActivity(intent);
+                    return true;
+                }
+            });
 
             mFavoriteImgView.setImageResource(R.drawable.ic_delete_black_24dp);
             mFavoriteImgView.setOnClickListener(new View.OnClickListener() {

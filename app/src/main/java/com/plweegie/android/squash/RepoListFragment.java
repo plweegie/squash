@@ -26,16 +26,15 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.plweegie.android.squash.adapters.RepoAdapter;
-import com.plweegie.android.squash.data.RepoDatabase;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
-import com.plweegie.android.squash.utils.AppExecutors;
 import com.plweegie.android.squash.utils.GitHubService;
 import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,7 +70,7 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent,
             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.commit_list_fragment, parent, false);
+        View v = inflater.inflate(R.layout.list_fragment, parent, false);
         
         mImm = (InputMethodManager) getActivity().getSystemService(Context
                 .INPUT_METHOD_SERVICE);

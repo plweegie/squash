@@ -9,7 +9,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import com.plweegie.android.squash.CommitListFragment;
+
 import com.plweegie.android.squash.FaveListFragment;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.RepoListFragment;
@@ -18,8 +18,7 @@ import com.plweegie.android.squash.RepoListFragment;
 public class GithubPagerAdapter extends FragmentStatePagerAdapter {
     
     private Context mContext;
-    private int[] mTabTitles = new int[] {R.string.list_repos, R.string.list_faves,
-        R.string.list_commits};
+    private int[] mTabTitles = new int[] {R.string.list_repos, R.string.list_faves};
     
     public GithubPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -33,8 +32,6 @@ public class GithubPagerAdapter extends FragmentStatePagerAdapter {
                 return RepoListFragment.newInstance();
             case 1:
                 return FaveListFragment.newInstance();
-            case 2:
-                return CommitListFragment.newInstance();
             default:
                 throw new IllegalArgumentException("Position error in ViewPager");
         }
@@ -42,7 +39,7 @@ public class GithubPagerAdapter extends FragmentStatePagerAdapter {
     
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
     
     @Override

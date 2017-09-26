@@ -15,11 +15,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.Commit;
+import com.plweegie.android.squash.utils.DateUtils;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 
@@ -36,7 +34,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.CommitHold
     @Override
     public CommitHolder onCreateViewHolder(ViewGroup vg, int i) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        return new CommitHolder(inflater, vg, R.layout.commit_view_holder);
+        return new CommitHolder(inflater, vg, R.layout.commit_view);
     }
 
     @Override
@@ -47,7 +45,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.CommitHold
 
     @Override
     public int getItemCount() {
-        return mCommits.size();
+        return mCommits == null ? 0 : mCommits.size();
     }
     
     @Override
@@ -78,15 +76,6 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.CommitHold
             mInfoTextView.setText(buildCommitInfo(commit));
         }
         
-        private String convertDate(String date) throws ParseException {
-            String dayDate = date.split("T")[0];
-            DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd");
-            DateFormat targetFormat = new SimpleDateFormat("dd MMMM, yyyy");
-            
-            Date commitDate = sourceFormat.parse(dayDate);
-            return targetFormat.format(commitDate);
-        }
-        
         private CharSequence buildCommitInfo(Commit commit) {
             
             CharSequence result;
@@ -97,7 +86,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.CommitHold
             String formattedDate = "";
             
             try {
-                formattedDate = convertDate(date);
+                formattedDate = DateUtils.changeDateFormats(date);
             } catch (ParseException e) {
                 Log.e("CommitAdapter", "Date parser error: " + e);
             }

@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Commit {
 
+    @SerializedName("sha")
+    @Expose
+    private String sha;
     @SerializedName("commit")
     @Expose
     private CommitBody commitBody;
@@ -18,6 +21,14 @@ public class Commit {
     @SerializedName("author")
     @Expose
     private Author author;
+
+    public String getSha() {
+        return sha;
+    }
+
+    public void setSha(String sha) {
+        this.sha = sha;
+    }
 
     public CommitBody getCommitBody() {
         return commitBody;
