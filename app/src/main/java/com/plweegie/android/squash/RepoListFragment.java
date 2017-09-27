@@ -30,6 +30,7 @@ import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.utils.GitHubService;
 import com.plweegie.android.squash.utils.Injectors;
+import com.plweegie.android.squash.utils.PaginationScrollListener;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.util.ArrayList;
@@ -44,18 +45,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapterOnClickHandler {
     
-    public static final String GITHUB_BASE_URL = "https://api.github.com/";
-    public static final int MAXIMUM_LIST_LENGTH = 10;
-    
-    private List<RepoEntry> mRepos;
+    private static final String GITHUB_BASE_URL = "https://api.github.com/";
+    private static final int MAXIMUM_LIST_LENGTH = 30;
+    private static final int TOTAL_PAGES_NUMBER = 4;
+    private static final int START_PAGE = 1;
+
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    private int currentPage = START_PAGE;
+
     private RepoRepository mDataRepository;
     private RecyclerView mRecyclerView;
+    private LinearLayoutManager mManager;
     private RepoAdapter mAdapter;
     private ProgressBar mIndicator;
     private InputMethodManager mImm;
 
     private GitHubService mService;
-    
+
     public static RepoListFragment newInstance() {
         return new RepoListFragment();
     }
@@ -71,18 +78,45 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     public View onCreateView(LayoutInflater inflater, ViewGroup parent,
             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.list_fragment, parent, false);
-        
+
         mImm = (InputMethodManager) getActivity().getSystemService(Context
                 .INPUT_METHOD_SERVICE);
-        mRepos = new ArrayList<>();
         mRecyclerView = v.findViewById(R.id.commits_recycler_view);
         mIndicator = v.findViewById(R.id.load_indicator);
         mIndicator.setVisibility(View.GONE);
+
+        mAdapter = new RepoAdapter(getActivity(), this);
+        mManager = new LinearLayoutManager(getActivity());
         
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
+
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new PaginationScrollListener(mManager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage++;
+                updateUI();
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return MAXIMUM_LIST_LENGTH;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Retrofit retrofit = new Retrofit.Builder()
@@ -115,7 +149,13 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
                 mIndicator.setVisibility(View.VISIBLE);
                 
                 QueryPreferences.setStoredQuery(getActivity(), string);
+                isLoading = false;
+                isLastPage = false;
+                currentPage = START_PAGE;
+
+                mAdapter.clear();
                 updateUI();
+
                 return true;
             }
 
@@ -136,40 +176,39 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
 
     @Override
     public void onItemClick(int position) {
-        mDataRepository.addFavorite(mRepos.get(position));
+        mDataRepository.addFavorite(mAdapter.getItem(position));
         Log.d("RepoListFragment", "pos " + position + " clicked");
     }
     
-    public void updateUI() {
-        
-        final String apiQuery = QueryPreferences.getStoredQuery(getActivity());
-        Call<List<RepoEntry>> call = mService.getRepos(apiQuery, MAXIMUM_LIST_LENGTH);
+    private void updateUI() {
 
+        final String apiQuery = QueryPreferences.getStoredQuery(getActivity());
+        Call<List<RepoEntry>> call = mService.getRepos(apiQuery, currentPage);
         call.enqueue(new Callback<List<RepoEntry>>() {
+
             @Override
             public void onResponse(Call<List<RepoEntry>> call,
-                    Response<List<RepoEntry>> response) {
-                
+                                   Response<List<RepoEntry>> response) {
+
+                isLoading = false;
+
                 if (response.body() == null) {
-                    Toast.makeText(getActivity(), "No repositories found for " +
-                            apiQuery, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "No repositories found for " + apiQuery,
+                            Toast.LENGTH_SHORT).show();
                     mIndicator.setVisibility(View.GONE);
                     return;
                 }
-                
-                if (!mRepos.isEmpty()) {
-                    mRepos.clear();
+
+                List<RepoEntry> repos = response.body();
+
+                if (repos.size() > 0) {
+                    mAdapter.addAll(repos);
                 }
-                mRepos.addAll(response.body());
-                
-                if (mAdapter == null) {
-                    mAdapter = new RepoAdapter(getActivity(), mRepos, RepoListFragment.this);
-                    mAdapter.setHasStableIds(true);
-                    mRecyclerView.setAdapter(mAdapter);
-                } else {
-                    mAdapter.setContent(mRepos);
-                    mAdapter.notifyDataSetChanged();
+
+                if (repos.size() < MAXIMUM_LIST_LENGTH) {
+                    isLastPage = true;
                 }
+
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mIndicator.setVisibility(View.GONE);
             }
@@ -180,4 +219,5 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
             }
         });
     }
+
 }

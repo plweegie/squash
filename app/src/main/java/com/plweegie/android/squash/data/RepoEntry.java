@@ -38,6 +38,7 @@ public class RepoEntry {
     @Expose
     @Embedded
     private Owner owner;
+    private String lastCommitSha;
 
     @Ignore
     public RepoEntry() {}
@@ -51,6 +52,7 @@ public class RepoEntry {
         this.stargazersCount = stargazersCount;
         this.watchersCount = watchersCount;
         this.owner.login = ownerLogin;
+        this.lastCommitSha = "";
     }
 
     public RepoEntry(int id, long repoId, String name, String language, int stargazersCount,
@@ -118,6 +120,14 @@ public class RepoEntry {
 
     public Owner getOwner() {
         return owner;
+    }
+
+    public String getLastCommitSha() {
+        return lastCommitSha;
+    }
+
+    public void setLastCommitSha(String lastCommitSha) {
+        this.lastCommitSha = lastCommitSha;
     }
 
     public static class Owner {

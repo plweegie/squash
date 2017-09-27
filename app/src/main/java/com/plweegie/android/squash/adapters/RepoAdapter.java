@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,14 +26,23 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
     
     private List<RepoEntry> mRepos;
     private Context mContext;
+    private boolean isLoadingAdded = false;
 
     private final RepoAdapterOnClickHandler mClickHandler;
     
-    public RepoAdapter(Context context, List<RepoEntry> repos,
+    public RepoAdapter(Context context,
                        RepoAdapterOnClickHandler clickHandler) {
         mContext = context;
-        mRepos = repos;
+        mRepos = new ArrayList<>();
         mClickHandler = clickHandler;
+    }
+
+    public List<RepoEntry> getRepos() {
+        return mRepos;
+    }
+
+    public void setRepos(List<RepoEntry> repos) {
+        mRepos = repos;
     }
 
     @Override
@@ -50,17 +60,45 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
 
     @Override
     public int getItemCount() {
-        return mRepos.size();
+        return mRepos == null ? 0 : mRepos.size();
     }
     
     @Override
     public long getItemId(int position) {
         return position;
     }
-    
-    public void setContent(List<RepoEntry> repos) {
-        mRepos = repos;
-        notifyDataSetChanged();
+
+    public void add(RepoEntry repo) {
+        mRepos.add(repo);
+        notifyItemInserted(mRepos.size() - 1);
+    }
+
+    public void addAll(List<RepoEntry> repos) {
+        for (RepoEntry r : repos) {
+            add(r);
+        }
+    }
+
+    public void remove(RepoEntry repo) {
+        int position = mRepos.indexOf(repo);
+        if (position > -1) {
+            mRepos.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        while (getItemCount() > 0) {
+            remove(getItem(0));
+        }
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+    public RepoEntry getItem(int position) {
+        return mRepos.get(position);
     }
 
     public interface RepoAdapterOnClickHandler {
