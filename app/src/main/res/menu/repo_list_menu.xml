@@ -5,4 +5,8 @@
         android:id="@+id/repo_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/sort_by"
+        android:title="@string/settings"
+        app:showAsAction="never" />
 </menu>

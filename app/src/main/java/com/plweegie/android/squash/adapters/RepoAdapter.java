@@ -6,7 +6,6 @@
 package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,8 @@ import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -26,7 +27,6 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
     
     private List<RepoEntry> mRepos;
     private Context mContext;
-    private boolean isLoadingAdded = false;
 
     private final RepoAdapterOnClickHandler mClickHandler;
     
@@ -91,6 +91,10 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         while (getItemCount() > 0) {
             remove(getItem(0));
         }
+    }
+
+    public void sort(Comparator<RepoEntry> comparator) {
+        Collections.sort(mRepos, comparator);
     }
 
     public boolean isEmpty() {

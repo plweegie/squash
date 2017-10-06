@@ -6,6 +6,7 @@
 package com.plweegie.android.squash;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -33,7 +34,6 @@ import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.PaginationScrollListener;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,7 +47,6 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     
     private static final String GITHUB_BASE_URL = "https://api.github.com/";
     private static final int MAXIMUM_LIST_LENGTH = 30;
-    private static final int TOTAL_PAGES_NUMBER = 4;
     private static final int START_PAGE = 1;
 
     private boolean isLoading = false;
@@ -172,6 +171,17 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
                 searchView.setQuery(query, false);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sort_by:
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
