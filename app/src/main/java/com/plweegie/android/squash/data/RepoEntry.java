@@ -25,6 +25,9 @@ public class RepoEntry {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("created_at")
+    @Expose
+    private String createdAt;
     @SerializedName("language")
     @Expose
     private String language;
@@ -44,10 +47,11 @@ public class RepoEntry {
     public RepoEntry() {}
 
     @Ignore
-    public RepoEntry(long repoId, String name, String language, int stargazersCount,
-                     int watchersCount, String ownerLogin) {
+    public RepoEntry(long repoId, String name, String createdAt, String language,
+                     int stargazersCount, int watchersCount, String ownerLogin) {
         this.repoId = repoId;
         this.name = name;
+        this.createdAt = createdAt;
         this.language = language;
         this.stargazersCount = stargazersCount;
         this.watchersCount = watchersCount;
@@ -55,11 +59,12 @@ public class RepoEntry {
         this.lastCommitSha = "";
     }
 
-    public RepoEntry(int id, long repoId, String name, String language, int stargazersCount,
-                     int watchersCount, Owner owner) {
+    public RepoEntry(int id, long repoId, String name, String createdAt, String language,
+                     int stargazersCount, int watchersCount, Owner owner) {
         this.id = id;
         this.repoId = repoId;
         this.name = name;
+        this.createdAt = createdAt;
         this.language = language;
         this.stargazersCount = stargazersCount;
         this.watchersCount = watchersCount;
@@ -88,6 +93,14 @@ public class RepoEntry {
 
     public String getName() {
         return name;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setLanguage(String language) {

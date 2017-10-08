@@ -6,6 +6,8 @@
 package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.plweegie.android.squash.R;
+import com.plweegie.android.squash.SettingsFragment;
 import com.plweegie.android.squash.data.RepoEntry;
+import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +31,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
     
     private List<RepoEntry> mRepos;
     private Context mContext;
+    private Comparator<RepoEntry> mComparator;
 
     private final RepoAdapterOnClickHandler mClickHandler;
     
@@ -35,6 +40,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         mContext = context;
         mRepos = new ArrayList<>();
         mClickHandler = clickHandler;
+        mComparator = new QueryPreferences.RepoNameComparator();
     }
 
     public List<RepoEntry> getRepos() {
@@ -93,8 +99,22 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         }
     }
 
-    public void sort(Comparator<RepoEntry> comparator) {
-        Collections.sort(mRepos, comparator);
+    public void sort() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        int sortedBy = Integer.parseInt(prefs.getString(SettingsFragment
+                .KEY_PREF_SORT_BY_SETTING, "-1"));
+        switch(sortedBy) {
+            case 1:
+                mComparator = new QueryPreferences.RepoCreatedComparator();
+                break;
+            case 2:
+                mComparator = new QueryPreferences.RepoStarsComparator();
+                break;
+            default:
+                mComparator = new QueryPreferences.RepoNameComparator();
+        }
+        Collections.sort(mRepos, mComparator);
+        notifyDataSetChanged();
     }
 
     public boolean isEmpty() {

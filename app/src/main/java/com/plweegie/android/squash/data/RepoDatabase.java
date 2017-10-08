@@ -9,7 +9,7 @@ import android.content.Context;
  * Created by jan on 17/09/17.
  */
 
-@Database(entities = {RepoEntry.class}, version = 1)
+@Database(entities = {RepoEntry.class}, version = 2)
 public abstract class RepoDatabase extends RoomDatabase{
 
     private static final String DATABASE_NAME = "repos";

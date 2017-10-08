@@ -7,7 +7,9 @@ package com.plweegie.android.squash;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +36,7 @@ import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.PaginationScrollListener;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,6 +63,8 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     private ProgressBar mIndicator;
     private InputMethodManager mImm;
 
+    private SharedPreferences mSharedPrefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener mListener;
     private GitHubService mService;
 
     public static RepoListFragment newInstance() {
@@ -71,6 +76,22 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mDataRepository = Injectors.provideRepository(getActivity());
+
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+                mAdapter.sort();
+            }
+        };
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(GITHUB_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        mService = retrofit.create(GitHubService.class);
     }
     
     @Override
@@ -117,17 +138,23 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
             }
         });
 
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(GITHUB_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        mService = retrofit.create(GitHubService.class);
         updateUI();
         
         return v;
     }
-    
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSharedPrefs.registerOnSharedPreferenceChangeListener(mListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(mListener);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -213,6 +240,7 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
 
                 if (repos.size() > 0) {
                     mAdapter.addAll(repos);
+                    mAdapter.sort();
                 }
 
                 if (repos.size() < MAXIMUM_LIST_LENGTH) {
