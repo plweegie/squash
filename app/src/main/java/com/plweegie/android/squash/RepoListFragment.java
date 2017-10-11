@@ -26,29 +26,24 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.plweegie.android.squash.adapters.RepoAdapter;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
-import com.plweegie.android.squash.utils.GitHubService;
+import com.plweegie.android.squash.rest.GitHubService;
+import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.PaginationScrollListener;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapterOnClickHandler {
-    
-    private static final String GITHUB_BASE_URL = "https://api.github.com/";
+
     private static final int MAXIMUM_LIST_LENGTH = 30;
     private static final int START_PAGE = 1;
 
@@ -86,12 +81,8 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
             }
         };
 
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(GITHUB_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        mService = retrofit.create(GitHubService.class);
+        RestClient client = new RestClient(getActivity());
+        mService = client.getApiService();
     }
     
     @Override

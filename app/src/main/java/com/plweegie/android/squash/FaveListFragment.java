@@ -5,7 +5,11 @@
  */
 package com.plweegie.android.squash;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,6 +25,7 @@ import android.widget.ProgressBar;
 
 import com.plweegie.android.squash.adapters.FaveAdapter;
 import com.plweegie.android.squash.data.RepoRepository;
+import com.plweegie.android.squash.services.CommitPollService;
 import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.viewmodels.FaveListViewModel;
 import com.plweegie.android.squash.viewmodels.FaveListViewModelFactory;
@@ -30,6 +35,8 @@ import com.plweegie.android.squash.viewmodels.FaveListViewModelFactory;
  * @author jan
  */
 public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapterOnClickHandler {
+
+    private static final int POLL_JOB_ID = 112;
     
     private RecyclerView mRecyclerView;
     private RepoRepository mDataRepository;
@@ -49,6 +56,26 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         mDataRepository = Injectors.provideRepository(getActivity());
         FaveListViewModelFactory factory = new FaveListViewModelFactory(mDataRepository);
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(FaveListViewModel.class);
+
+        JobScheduler scheduler = (JobScheduler) getActivity()
+                .getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        boolean hasBeenScheduled = false;
+        for (JobInfo info: scheduler.getAllPendingJobs()) {
+            if(info.getId() == POLL_JOB_ID) {
+                hasBeenScheduled = true;
+            }
+        }
+
+        if (!hasBeenScheduled) {
+            JobInfo jobInfo = new JobInfo.Builder(POLL_JOB_ID,
+                    new ComponentName(getActivity(), CommitPollService.class))
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                    .setPeriodic(60 * 60 * 1000)
+                    .setPersisted(true)
+                    .build();
+            scheduler.schedule(jobInfo);
+        }
     }
     
     @Override
@@ -71,6 +98,9 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         mViewModel.getFaveList().observe(this, repoEntries -> {
             mAdapter.setContent(repoEntries);
         });
+
+        /*for(RepoEntry repo: repoEntries) {
+        }*/
         
         return v;
     }

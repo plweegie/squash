@@ -10,20 +10,17 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.plweegie.android.squash.data.Commit;
+import com.plweegie.android.squash.rest.GitHubService;
+import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.utils.DateUtils;
-import com.plweegie.android.squash.utils.GitHubService;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.text.ParseException;
 import java.util.List;
 
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by jan on 25/09/17.
@@ -31,7 +28,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LastCommitDetailsActivity extends AppCompatActivity {
 
-    private static final String GITHUB_BASE_URL = "https://api.github.com/";
     private static final String TEXT_VIEW_CONTENTS = "textViewContents";
     private static final String EXTRA_REPO_PROPS = "repoPropsExtra";
 
@@ -40,8 +36,6 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     private TextView mInfoTextView;
     private TextView mDateTextView;
 
-    private OkHttpClient mClient;
-    private Retrofit mRetrofit;
     private GitHubService mService;
 
     @Override
@@ -62,17 +56,8 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        Cache cache = new Cache(this.getCacheDir(), 5 * 1024 * 1024);
-        mClient = new OkHttpClient.Builder()
-                .cache(cache)
-                .build();
-
-        mRetrofit = new Retrofit.Builder()
-                .baseUrl(GITHUB_BASE_URL)
-                .client(mClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        mService = mRetrofit.create(GitHubService.class);
+        RestClient client = new RestClient(this);
+        mService = client.getApiService();
 
         updateUI();
     }

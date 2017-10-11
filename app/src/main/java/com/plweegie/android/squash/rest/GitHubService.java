@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.plweegie.android.squash.utils;
+package com.plweegie.android.squash.rest;
 
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
