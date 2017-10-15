@@ -37,6 +37,10 @@ public class RepoRepository {
         return mRepoDao.getFavorites();
     }
 
+    public List<RepoEntry> getAllFavoritesDirectly() {
+        return mRepoDao.getFavoritesDirectly();
+    }
+
     public void addFavorite(RepoEntry repo) {
         mExecutors.diskIO().execute(() -> {
             mRepoDao.insertFavorite(repo);

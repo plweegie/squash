@@ -47,13 +47,16 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
 
     @Override
     public int getItemCount() {
-        if (mRepos == null) return 0;
-        return mRepos.size();
+        return mRepos == null ? 0 : mRepos.size();
     }
 
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public RepoEntry getItem(int position) {
+        return mRepos.get(position);
     }
 
     public void setContent(List<RepoEntry> repos) {

@@ -6,6 +6,9 @@
     <string name="clear_menu_label">Clear all</string>
     <string name="search_hint">Search user&#8230;</string>
     <string name="settings">Settings</string>
+
+    <!-- Notifs -->
+    <string name="new_commit_headline">New commit in one of your favorite repos:</string>
     
     <!-- Commit info for CommitListFragment -->
     <string name="commit_info">By &lt;b>%1$s&lt;/b></string>

@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,11 +25,24 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.plweegie.android.squash.adapters.FaveAdapter;
+import com.plweegie.android.squash.data.Commit;
+import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
+import com.plweegie.android.squash.rest.GitHubService;
+import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.services.CommitPollService;
 import com.plweegie.android.squash.utils.Injectors;
+import com.plweegie.android.squash.utils.QueryPreferences;
 import com.plweegie.android.squash.viewmodels.FaveListViewModel;
 import com.plweegie.android.squash.viewmodels.FaveListViewModelFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  *
@@ -43,6 +57,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
     private FaveAdapter mAdapter;
     private ProgressBar mIndicator;
     private FaveListViewModel mViewModel;
+    private GitHubService mService;
     
     public static FaveListFragment newInstance() {
         return new FaveListFragment();
@@ -57,6 +72,9 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         FaveListViewModelFactory factory = new FaveListViewModelFactory(mDataRepository);
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(FaveListViewModel.class);
 
+        RestClient client = new RestClient(getActivity());
+        mService = client.getApiService();
+
         JobScheduler scheduler = (JobScheduler) getActivity()
                 .getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
@@ -70,7 +88,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         if (!hasBeenScheduled) {
             JobInfo jobInfo = new JobInfo.Builder(POLL_JOB_ID,
                     new ComponentName(getActivity(), CommitPollService.class))
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPeriodic(60 * 60 * 1000)
                     .setPersisted(true)
                     .build();
@@ -82,6 +100,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
     public View onCreateView(LayoutInflater inflater, ViewGroup parent,
             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.list_fragment, parent, false);
+        List<Commit> repoLastCommits = new ArrayList<>();
         
         mRecyclerView = v.findViewById(R.id.commits_recycler_view);
         mIndicator = v.findViewById(R.id.load_indicator);
@@ -97,11 +116,33 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
         mViewModel.getFaveList().observe(this, repoEntries -> {
             mAdapter.setContent(repoEntries);
+            for(int i = 0; i < mAdapter.getItemCount(); i++) {
+                RepoEntry repo = mAdapter.getItem(i);
+
+                Call<List<Commit>> call = mService.getCommits(repo.getOwner().getLogin(),
+                        repo.getName(), 1);
+
+                call.enqueue(new Callback<List<Commit>>() {
+                    @Override
+                    public void onResponse(Call<List<Commit>> call, Response<List<Commit>> response) {
+                        Commit commit = response.body().get(0);
+                        repoLastCommits.add(commit);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Commit>> call, Throwable t) {
+                        Log.e("LastCommitFragment", "Retrofit error: " + t);
+                    }
+                });
+            }
+
+            if (!repoLastCommits.isEmpty()) {
+                Collections.sort(repoLastCommits, new QueryPreferences.CommitCreatedComparator());
+                QueryPreferences.setLastResultSha(getActivity(), repoLastCommits.get(0).getSha());
+            }
+
         });
 
-        /*for(RepoEntry repo: repoEntries) {
-        }*/
-        
         return v;
     }
 

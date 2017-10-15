@@ -18,6 +18,9 @@ public interface RepoDao {
     @Query("SELECT * FROM repos")
     LiveData<List<RepoEntry>> getFavorites();
 
+    @Query("SELECT * FROM repos")
+    List<RepoEntry> getFavoritesDirectly();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertFavorite(RepoEntry repo);
 

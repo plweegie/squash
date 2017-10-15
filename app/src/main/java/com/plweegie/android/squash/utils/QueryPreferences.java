@@ -9,6 +9,7 @@ import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
 
 import java.text.ParseException;
@@ -72,6 +73,21 @@ public class QueryPreferences {
             Integer aStars = a.getStargazersCount();
             Integer bStars = b.getStargazersCount();
             return bStars.compareTo(aStars);
+        }
+    }
+
+    public static class CommitCreatedComparator implements Comparator<Commit> {
+        @Override
+        public int compare(Commit a, Commit b) {
+            long bStamp = 0L;
+            long aStamp = 0L;
+            try {
+                aStamp = DateUtils.convertToTimestamp(a.getCommitBody().getCommitBodyAuthor().getDate());
+                bStamp = DateUtils.convertToTimestamp(b.getCommitBody().getCommitBodyAuthor().getDate());
+            } catch(ParseException e) {
+                Log.e("QueryPreferences", "Date parser error: " + e);
+            }
+            return (int) bStamp - (int) aStamp;
         }
     }
 }

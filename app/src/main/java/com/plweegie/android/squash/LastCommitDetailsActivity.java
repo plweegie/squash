@@ -13,7 +13,6 @@ import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.utils.DateUtils;
-import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.text.ParseException;
 import java.util.List;
@@ -82,7 +81,6 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
                         .split("\n")[0]);
                 mInfoTextView.setText(buildCommitInfo(commit));
                 mDateTextView.setText(buildCommitDate(commit));
-                QueryPreferences.setLastResultSha(LastCommitDetailsActivity.this, commit.getSha());
             }
 
             @Override
