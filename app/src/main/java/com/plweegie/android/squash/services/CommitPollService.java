@@ -91,7 +91,8 @@ public class CommitPollService extends JobService {
 
             Collections.sort(commits, new QueryPreferences.CommitCreatedComparator());
 
-            String newLastSha = commits.get(0).getSha();
+            String newLastSha = commits.isEmpty() ? lastSha : commits.get(0).getSha();
+
             if(!newLastSha.equals(lastSha)) {
                 Commit updatedCommit = commits.get(0);
                 String commitRepo = updatedCommit.getHtmlUrl().split("/")[4];
@@ -101,7 +102,7 @@ public class CommitPollService extends JobService {
                         new String[] {commitOwner, commitRepo});
 
                 PendingIntent pi = PendingIntent.getActivity(mContext,
-                        0, intent, 0);
+                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 Notification notif = new NotificationCompat.Builder(mContext,
                         NotificationChannel.DEFAULT_CHANNEL_ID)
