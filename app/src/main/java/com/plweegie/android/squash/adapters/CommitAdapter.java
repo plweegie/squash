@@ -96,7 +96,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.CommitHold
             
             CharSequence result;
             
-            String authorId = commit.getAuthor().getLogin();
+            String authorId = commit.getCommitBody().getCommitBodyAuthor().getName();
             
             String date = commit.getCommitBody().getCommitBodyAuthor().getDate();
             String formattedDate = "";

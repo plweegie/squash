@@ -111,14 +111,8 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     private CharSequence buildCommitInfo(Commit commit) {
 
         CharSequence result;
-        String authorId;
 
-        if (commit.getAuthor() == null) {
-            authorId = "null";
-        } else {
-            authorId = commit.getAuthor().getLogin();
-        }
-
+        String authorId = commit.getCommitBody().getCommitBodyAuthor().getName();
         String info = this.getResources().getString(R.string.commit_info, authorId);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

@@ -14,9 +14,6 @@ public class Commit {
     @SerializedName("html_url")
     @Expose
     private String htmlUrl;
-    @SerializedName("author")
-    @Expose
-    private Author author;
 
     public String getSha() {
         return sha;
@@ -41,15 +38,6 @@ public class Commit {
     public void setHtmlUrl(String htmlUrl) {
         this.htmlUrl = htmlUrl;
     }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
-
 
     public static class CommitBody {
 
@@ -78,9 +66,20 @@ public class Commit {
 
         public static class CommitBodyAuthor{
 
+            @SerializedName("name")
+            @Expose
+            private String name;
             @SerializedName("date")
             @Expose
             private String date;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
 
             public String getDate() {
                 return date;
@@ -89,21 +88,6 @@ public class Commit {
             public void setDate(String date) {
                 this.date = date;
             }
-        }
-    }
-
-    public static class Author {
-
-        @SerializedName("login")
-        @Expose
-        private String login;
-
-        public String getLogin() {
-            return login;
-        }
-
-        public void setLogin(String login) {
-            this.login = login;
         }
     }
 }
