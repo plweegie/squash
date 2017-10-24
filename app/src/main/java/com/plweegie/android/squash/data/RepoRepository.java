@@ -6,10 +6,6 @@ import com.plweegie.android.squash.utils.AppExecutors;
 
 import java.util.List;
 
-/**
- * Created by jan on 17/09/17.
- */
-
 public class RepoRepository {
     // For Singleton instantiation
     private static final Object LOCK = new Object();

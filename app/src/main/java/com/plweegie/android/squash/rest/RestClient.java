@@ -10,10 +10,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by jan on 11/10/17.
- */
-
 public class RestClient {
 
     private static final String GITHUB_BASE_URL = "https://api.github.com/";

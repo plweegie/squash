@@ -5,10 +5,6 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-/**
- * Created by jan on 17/09/17.
- */
-
 @Database(entities = {RepoEntry.class}, version = 2)
 public abstract class RepoDatabase extends RoomDatabase{
 

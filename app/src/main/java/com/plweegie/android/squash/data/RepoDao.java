@@ -8,10 +8,6 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-/**
- * Created by jan on 17/09/17.
- */
-
 @Dao
 public interface RepoDao {
 

@@ -8,10 +8,6 @@ import com.plweegie.android.squash.data.RepoRepository;
 
 import java.util.List;
 
-/**
- * Created by jan on 18/09/17.
- */
-
 public class FaveListViewModel extends ViewModel {
 
     private final LiveData<List<RepoEntry>> mFaveList;

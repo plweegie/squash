@@ -3,10 +3,6 @@ package com.plweegie.android.squash.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by jan on 22/09/17.
- */
-
 public class Commit {
 
     @SerializedName("sha")

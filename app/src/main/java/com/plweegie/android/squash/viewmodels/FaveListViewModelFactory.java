@@ -5,10 +5,6 @@ import android.arch.lifecycle.ViewModelProvider;
 
 import com.plweegie.android.squash.data.RepoRepository;
 
-/**
- * Created by jan on 18/09/17.
- */
-
 public class FaveListViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final RepoRepository mRepository;

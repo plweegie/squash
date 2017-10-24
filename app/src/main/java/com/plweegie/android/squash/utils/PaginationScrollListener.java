@@ -3,10 +3,6 @@ package com.plweegie.android.squash.utils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-/**
- * Created by jan on 27/09/17.
- */
-
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
 
     private LinearLayoutManager mManager;

@@ -5,13 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by jan on 24/09/17.
- */
+
 
 public class DateUtils {
 
-    private static final DateFormat SOURCE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat SOURCE_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     private static final DateFormat TARGET_FORMAT = new SimpleDateFormat("dd MMMM, yyyy");
 
     public static String changeDateFormats(String date) throws ParseException {
@@ -23,7 +22,7 @@ public class DateUtils {
     }
 
     private static Date convertToDate(String date) throws ParseException {
-        String dayDate = date.split("T")[0];
+        String dayDate = date.split("Z")[0];
         Date commitDate = SOURCE_FORMAT.parse(dayDate);
         return commitDate;
     }

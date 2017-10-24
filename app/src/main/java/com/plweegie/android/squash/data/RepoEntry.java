@@ -9,10 +9,6 @@ import android.arch.persistence.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by jan on 17/09/17.
- */
-
 @Entity(tableName = "repos", indices = {@Index(value = "name", unique = true)})
 
 public class RepoEntry {
