@@ -20,8 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LastCommitDetailsActivity" />
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".LastCommitDetailsActivity"
+            android:parentActivityName=".GithubPagerActivity" />
+        <activity android:name=".SettingsActivity"
+            android:parentActivityName=".GithubPagerActivity" />
 
         <service
             android:name=".services.CommitPollService"

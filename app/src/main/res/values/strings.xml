@@ -11,6 +11,7 @@
     <string name="new_commit_headline">New commit in one of your favorite repos:</string>
     
     <!-- Commit info for CommitListFragment -->
+    <string name="last_commit">Last commit</string>
     <string name="commit_info">By &lt;b>%1$s&lt;/b></string>
     <string name="commit_date">On %1$s</string>
     

@@ -76,6 +76,7 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
         RestClient client = new RestClient(this);
         mService = client.getApiService();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         updateUI();
     }
 

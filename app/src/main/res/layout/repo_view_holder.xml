@@ -7,9 +7,10 @@
     android:padding="16dp">
     
     <LinearLayout
+        android:id="@+id/repo_name_layout"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:orientation="vertical">
         
         <TextView
@@ -39,11 +40,19 @@
         android:layout_weight="1"
         android:tint="@color/colorAccent"
         android:tintMode="src_in" />
+
+    <ImageView
+        android:id="@+id/last_commit_image_view"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_description_24dp"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1" />
     
     <RelativeLayout
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="1">   
+        android:layout_weight="2">
             
         <ImageView
             android:id="@+id/watchers_iv"

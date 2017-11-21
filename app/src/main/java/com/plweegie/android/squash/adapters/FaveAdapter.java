@@ -90,7 +90,8 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
         protected TextView mLangTextView;
         protected TextView mStarCountTextView;
         protected TextView mWatchCountTextView;
-        protected ImageView mFavoriteImgView;
+        protected ImageView mDeleteImgView;
+        protected ImageView mInfoImageView;
 
         public FaveHolder(LayoutInflater inflater, ViewGroup parent,
                           int layoutResId) {
@@ -100,7 +101,8 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
             mLangTextView = itemView.findViewById(R.id.repo_language_tv);
             mStarCountTextView = itemView.findViewById(R.id.stars_tv);
             mWatchCountTextView = itemView.findViewById(R.id.watchers_tv);
-            mFavoriteImgView = itemView.findViewById(R.id.fave_image_view);
+            mDeleteImgView = itemView.findViewById(R.id.fave_image_view);
+            mInfoImageView = itemView.findViewById(R.id.last_commit_image_view);
         }
 
         public void bind(RepoEntry repo) {
@@ -110,22 +112,22 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
             mStarCountTextView.setText(Integer.toString(repo.getStargazersCount()));
             mWatchCountTextView.setText(Integer.toString(repo.getWatchersCount()));
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    Intent intent = LastCommitDetailsActivity.newIntent(mContext,
-                            new String[] {repo.getOwner().getLogin(), repo.getName()});
-                    mContext.startActivity(intent);
-                    return true;
-                }
-            });
-
-            mFavoriteImgView.setImageResource(R.drawable.ic_delete_black_24dp);
-            mFavoriteImgView.setOnClickListener(new View.OnClickListener() {
+            mDeleteImgView.setImageResource(R.drawable.ic_delete_black_24dp);
+            mDeleteImgView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     mClickHandler.onItemClick(mRepos.get(position).getRepoId());
+                }
+            });
+
+            mInfoImageView.setImageResource(R.drawable.ic_description_24dp);
+            mInfoImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = LastCommitDetailsActivity.newIntent(mContext,
+                            new String[] {repo.getOwner().getLogin(), repo.getName()});
+                    mContext.startActivity(intent);
                 }
             });
         }

@@ -24,6 +24,7 @@ package com.plweegie.android.squash.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,8 +153,8 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         private TextView mStarCountTextView;
         private TextView mWatchCountTextView;
         private ImageView mFavoriteImgView;
+        private ImageView mInvisibleImgView;
 
-        
         public RepoHolder(LayoutInflater inflater, ViewGroup parent,
                 int layoutResId) {
             super(inflater.inflate(layoutResId, parent, false));
@@ -163,6 +164,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
             mStarCountTextView = itemView.findViewById(R.id.stars_tv);
             mWatchCountTextView = itemView.findViewById(R.id.watchers_tv);
             mFavoriteImgView = itemView.findViewById(R.id.fave_image_view);
+            mInvisibleImgView = itemView.findViewById(R.id.last_commit_image_view);
         }
         
         public void bind(RepoEntry repo) {
@@ -171,7 +173,9 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
             mLangTextView.setText(repo.getLanguage());
             mStarCountTextView.setText(Integer.toString(repo.getStargazersCount()));
             mWatchCountTextView.setText(Integer.toString(repo.getWatchersCount()));
-            
+
+            mInvisibleImgView.setVisibility(View.GONE);
+
             mFavoriteImgView.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
             mFavoriteImgView.setOnClickListener(new View.OnClickListener() {
                 @Override
