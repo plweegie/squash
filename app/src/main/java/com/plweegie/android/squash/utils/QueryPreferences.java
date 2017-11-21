@@ -14,7 +14,7 @@ import java.util.Comparator;
 public class QueryPreferences {
 
     private static final String PREF_SEARCH_QUERY = "searchQuery";
-    private static final String PREF_LAST_RESULT_SHA = "lastResultSha";
+    private static final String PREF_LAST_RESULT_DATE = "lastResultDate";
 
     public static String getStoredQuery(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
@@ -28,15 +28,15 @@ public class QueryPreferences {
                 .apply();
     }
 
-    public static String getLastResultSha(Context context) {
+    public static long getLastResultDate(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREF_LAST_RESULT_SHA, null);
+                .getLong(PREF_LAST_RESULT_DATE, 0L);
     }
 
-    public static void setLastResultSha(Context context, String lastResultSha) {
+    public static void setLastResultDate(Context context, long date) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putString(PREF_LAST_RESULT_SHA, lastResultSha)
+                .putLong(PREF_LAST_RESULT_DATE, date)
                 .apply();
     }
 

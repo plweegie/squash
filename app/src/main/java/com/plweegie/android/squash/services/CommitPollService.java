@@ -41,10 +41,12 @@ import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.rest.RestClient;
+import com.plweegie.android.squash.utils.DateUtils;
 import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -93,7 +95,8 @@ public class CommitPollService extends JobService {
 
             List<Commit> commits = new ArrayList<>();
 
-            String lastSha = QueryPreferences.getLastResultSha(mContext);
+            long lastDate = QueryPreferences.getLastResultDate(mContext);
+            long newLastDate = 0L;
 
             for (RepoEntry entry: repos) {
                 Call<List<Commit>> call = service.getCommits(entry.getOwner().getLogin(),
@@ -109,9 +112,15 @@ public class CommitPollService extends JobService {
 
             Collections.sort(commits, new QueryPreferences.CommitCreatedComparator());
 
-            String newLastSha = commits.isEmpty() ? lastSha : commits.get(0).getSha();
+            try {
+                newLastDate = commits.isEmpty() ? lastDate :
+                        DateUtils.convertToTimestamp(commits.get(0).getCommitBody()
+                                .getCommitBodyAuthor().getDate());
+            } catch (ParseException e) {
+                Log.e("CommitPollService", "Date parser error: " + e);
+            }
 
-            if(!newLastSha.equals(lastSha)) {
+            if(newLastDate > lastDate) {
                 Commit updatedCommit = commits.get(0);
                 String commitRepo = updatedCommit.getHtmlUrl().split("/")[4];
                 String commitOwner = updatedCommit.getHtmlUrl().split("/")[3];
@@ -126,9 +135,11 @@ public class CommitPollService extends JobService {
                         NotificationChannel.DEFAULT_CHANNEL_ID)
                         .setTicker(getResources().getString(R.string.new_commit_headline))
                         .setContentTitle(getResources().getString(R.string.new_commit_headline))
+                        //.setContentTitle(String.valueOf(lastDate))
                         .setContentText(commitRepo)
+                        //.setContentText(String.valueOf(newLastDate))
                         .setContentIntent(pi)
-                        .setSmallIcon(android.R.drawable.ic_menu_info_details)
+                        .setSmallIcon(R.drawable.ic_info_24dp)
                         .setAutoCancel(true)
                         .build();
 
@@ -136,7 +147,7 @@ public class CommitPollService extends JobService {
                         .from(CommitPollService.this);
                 notifManager.notify(0, notif);
 
-                QueryPreferences.setLastResultSha(mContext, newLastSha);
+                QueryPreferences.setLastResultDate(mContext, newLastDate);
             }
             jobFinished(jobParams, false);
             return null;

@@ -47,11 +47,13 @@ import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.services.CommitPollService;
+import com.plweegie.android.squash.utils.DateUtils;
 import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.QueryPreferences;
 import com.plweegie.android.squash.viewmodels.FaveListViewModel;
 import com.plweegie.android.squash.viewmodels.FaveListViewModelFactory;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -150,9 +152,19 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
             if (!repoLastCommits.isEmpty()) {
                 Collections.sort(repoLastCommits, new QueryPreferences.CommitCreatedComparator());
-                QueryPreferences.setLastResultSha(getActivity(), repoLastCommits.get(0).getSha());
-            }
+                long lastDate = QueryPreferences.getLastResultDate(getActivity());
+                long newLastDate = 0L;
+                try {
+                    newLastDate = DateUtils.convertToTimestamp(repoLastCommits.get(0).getCommitBody()
+                                    .getCommitBodyAuthor().getDate());
+                } catch(ParseException e) {
+                    Log.e("FaveListFragment", "Date parser error: " + e);
+                }
 
+                if (newLastDate > lastDate) {
+                    QueryPreferences.setLastResultDate(getActivity(), newLastDate);
+                }
+            }
         });
 
         return v;
