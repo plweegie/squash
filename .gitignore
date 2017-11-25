@@ -9,5 +9,6 @@ projectFilesBackup/
 .DS_Store
 /build
 /captures
+release/
 .externalNativeBuild
 github_access_ids.xml
