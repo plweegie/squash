@@ -28,6 +28,11 @@ public class QueryPreferences {
                 .apply();
     }
 
+    public static String getStoredAccessToken(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(AuthUtils.PREFERENCE_NAME, null);
+    }
+
     public static long getLastResultDate(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getLong(PREF_LAST_RESULT_DATE, 0L);

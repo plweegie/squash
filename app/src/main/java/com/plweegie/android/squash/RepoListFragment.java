@@ -227,7 +227,8 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     private void updateUI() {
 
         final String apiQuery = QueryPreferences.getStoredQuery(getActivity());
-        Call<List<RepoEntry>> call = mService.getRepos(apiQuery, currentPage);
+        final String authToken = QueryPreferences.getStoredAccessToken(getActivity());
+        Call<List<RepoEntry>> call = mService.getRepos(apiQuery, currentPage, authToken);
         call.enqueue(new Callback<List<RepoEntry>>() {
 
             @Override

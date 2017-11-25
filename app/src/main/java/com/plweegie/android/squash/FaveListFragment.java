@@ -72,6 +72,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
     private ProgressBar mIndicator;
     private FaveListViewModel mViewModel;
     private GitHubService mService;
+    private String mAuthToken;
     
     public static FaveListFragment newInstance() {
         return new FaveListFragment();
@@ -88,6 +89,8 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
         RestClient client = new RestClient(getActivity());
         mService = client.getApiService();
+
+        mAuthToken = QueryPreferences.getStoredAccessToken(getActivity());
 
         JobScheduler scheduler = (JobScheduler) getActivity()
                 .getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -134,7 +137,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
                 RepoEntry repo = mAdapter.getItem(i);
 
                 Call<List<Commit>> call = mService.getCommits(repo.getOwner().getLogin(),
-                        repo.getName(), 1);
+                        repo.getName(), 1, mAuthToken);
 
                 call.enqueue(new Callback<List<Commit>>() {
                     @Override

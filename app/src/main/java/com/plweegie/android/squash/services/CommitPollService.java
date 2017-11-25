@@ -98,9 +98,11 @@ public class CommitPollService extends JobService {
             long lastDate = QueryPreferences.getLastResultDate(mContext);
             long newLastDate = 0L;
 
+            String authToken = QueryPreferences.getStoredAccessToken(mContext);
+
             for (RepoEntry entry: repos) {
                 Call<List<Commit>> call = service.getCommits(entry.getOwner().getLogin(),
-                        entry.getName(), 1);
+                        entry.getName(), 1, authToken);
                 try {
                     Commit commit = call.execute().body().get(0);
                     commits.add(commit);

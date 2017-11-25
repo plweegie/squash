@@ -35,6 +35,7 @@ import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.utils.DateUtils;
+import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.text.ParseException;
 import java.util.List;
@@ -90,7 +91,9 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        Call<List<Commit>> call = mService.getCommits(mRepoProps[0], mRepoProps[1], 1);
+        String authToken = QueryPreferences.getStoredAccessToken(this);
+        Call<List<Commit>> call = mService.getCommits(mRepoProps[0], mRepoProps[1], 1,
+                authToken);
 
         call.enqueue(new Callback<List<Commit>>() {
             @Override

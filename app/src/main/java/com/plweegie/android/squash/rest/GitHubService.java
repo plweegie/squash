@@ -34,9 +34,11 @@ import retrofit2.http.Query;
 public interface GitHubService {
     @GET("users/{username}/repos")
     Call<List<RepoEntry>> getRepos(@Path("username") String userName,
-                                   @Query("page") int page);
+                                   @Query("page") int page,
+                                   @Query("access_token") String accessToken);
     
     @GET("repos/{owner}/{repo}/commits")
     Call<List<Commit>> getCommits(@Path("owner") String owner,
-                                  @Path("repo") String repo, @Query("per_page") int perPage);
+                                  @Path("repo") String repo, @Query("per_page") int perPage,
+                                  @Query("access_token") String accessToken);
 }
