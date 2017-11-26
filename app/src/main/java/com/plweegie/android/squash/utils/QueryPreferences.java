@@ -63,7 +63,7 @@ public class QueryPreferences {
             } catch(ParseException e) {
                 Log.e("QueryPreferences", "Date parser error: " + e);
             }
-            return (int) bStamp - (int) aStamp;
+            return Long.valueOf(bStamp).compareTo(aStamp);
         }
     }
 
@@ -87,7 +87,7 @@ public class QueryPreferences {
             } catch(ParseException e) {
                 Log.e("QueryPreferences", "Date parser error: " + e);
             }
-            return (int) bStamp - (int) aStamp;
+            return Long.valueOf(bStamp).compareTo(aStamp);
         }
     }
 }
