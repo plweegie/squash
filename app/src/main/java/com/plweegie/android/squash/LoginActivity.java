@@ -9,14 +9,9 @@ import android.widget.Button;
 
 import com.plweegie.android.squash.auth.GithubOauth;
 import com.plweegie.android.squash.auth.ResultCode;
-import com.plweegie.android.squash.utils.AuthUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-/**
- * Created by jan on 25/11/17.
- */
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,13 +24,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         mActivity = this;
 
+        String clientId = getString(R.string.client_id);
+        String clientSecret = getString(R.string.client_secret);
+
         mLoginBtn = findViewById(R.id.login_btn);
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 GithubOauth.Builder()
-                        .withClientId(AuthUtils.CLIENT_ID)
-                        .withClientSecret(AuthUtils.CLIENT_SECRET)
+                        .withClientId(clientId)
+                        .withClientSecret(clientSecret)
                         .withContext(mActivity)
                         .withScopeList(new ArrayList(Arrays.asList("public_repo")))
                         .packageName("com.plweegie.android.squash")

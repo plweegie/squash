@@ -45,7 +45,6 @@ import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
-import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.services.CommitPollService;
 import com.plweegie.android.squash.utils.DateUtils;
 import com.plweegie.android.squash.utils.Injectors;
@@ -58,6 +57,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,13 +66,15 @@ import retrofit2.Response;
 public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapterOnClickHandler {
 
     private static final int POLL_JOB_ID = 112;
+
+    @Inject
+    GitHubService mService;
     
     private RecyclerView mRecyclerView;
     private RepoRepository mDataRepository;
     private FaveAdapter mAdapter;
     private ProgressBar mIndicator;
     private FaveListViewModel mViewModel;
-    private GitHubService mService;
     private String mAuthToken;
     
     public static FaveListFragment newInstance() {
@@ -86,9 +89,6 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         mDataRepository = Injectors.provideRepository(getActivity());
         FaveListViewModelFactory factory = new FaveListViewModelFactory(mDataRepository);
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(FaveListViewModel.class);
-
-        RestClient client = new RestClient(getActivity());
-        mService = client.getApiService();
 
         mAuthToken = QueryPreferences.getStoredAccessToken(getActivity());
 
@@ -111,6 +111,12 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
                     .build();
             scheduler.schedule(jobInfo);
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        ((App) getActivity().getApplication()).getNetComponent().inject(this);
+        super.onAttach(context);
     }
     
     @Override

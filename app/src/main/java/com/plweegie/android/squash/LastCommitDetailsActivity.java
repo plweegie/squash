@@ -33,12 +33,13 @@ import android.widget.TextView;
 
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.rest.GitHubService;
-import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.utils.DateUtils;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.text.ParseException;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,15 +50,17 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     private static final String TEXT_VIEW_CONTENTS = "textViewContents";
     private static final String EXTRA_REPO_PROPS = "repoPropsExtra";
 
+    @Inject
+    GitHubService mService;
+
     private String[] mRepoProps;
     private TextView mMessageTextView;
     private TextView mInfoTextView;
     private TextView mDateTextView;
 
-    private GitHubService mService;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((App) getApplication()).getNetComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.commit_view);
 
@@ -73,9 +76,6 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
             mDateTextView.setText(savedInstanceState.getCharSequenceArray(TEXT_VIEW_CONTENTS)[2]);
             return;
         }
-
-        RestClient client = new RestClient(this);
-        mService = client.getApiService();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         updateUI();

@@ -46,12 +46,13 @@ import com.plweegie.android.squash.adapters.RepoAdapter;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
-import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.PaginationScrollListener;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,6 +63,9 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
 
     private static final int MAXIMUM_LIST_LENGTH = 30;
     private static final int START_PAGE = 1;
+
+    @Inject
+    GitHubService mService;
 
     private boolean isLoading = false;
     private boolean isLastPage = false;
@@ -76,7 +80,6 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
 
     private SharedPreferences mSharedPrefs;
     private SharedPreferences.OnSharedPreferenceChangeListener mListener;
-    private GitHubService mService;
 
     public static RepoListFragment newInstance() {
         return new RepoListFragment();
@@ -96,11 +99,14 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
                 mAdapter.sort();
             }
         };
-
-        RestClient client = new RestClient(getActivity());
-        mService = client.getApiService();
     }
-    
+
+    @Override
+    public void onAttach(Context context) {
+        ((App) getActivity().getApplication()).getNetComponent().inject(this);
+        super.onAttach(context);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent,
             Bundle savedInstanceState) {

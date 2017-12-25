@@ -34,13 +34,13 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.plweegie.android.squash.App;
 import com.plweegie.android.squash.LastCommitDetailsActivity;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
-import com.plweegie.android.squash.rest.RestClient;
 import com.plweegie.android.squash.utils.DateUtils;
 import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.QueryPreferences;
@@ -51,14 +51,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Call;
 
 public class CommitPollService extends JobService {
     private static final String TAG = "CommitPollService";
 
+    @Inject
+    GitHubService mService;
+
     private CommitPollTask mTask;
 
     public CommitPollService() {
+    }
+
+    @Override
+    public void onCreate() {
+        ((App) getApplication()).getNetComponent().inject(this);
+        super.onCreate();
     }
 
     @Override
@@ -87,8 +98,6 @@ public class CommitPollService extends JobService {
         @Override
         protected Void doInBackground(JobParameters... params) {
             JobParameters jobParams = params[0];
-            RestClient client = new RestClient(mContext);
-            GitHubService service = client.getApiService();
 
             RepoRepository repository = Injectors.provideRepository(mContext);
             List<RepoEntry> repos = repository.getAllFavoritesDirectly();
@@ -101,7 +110,7 @@ public class CommitPollService extends JobService {
             String authToken = QueryPreferences.getStoredAccessToken(mContext);
 
             for (RepoEntry entry: repos) {
-                Call<List<Commit>> call = service.getCommits(entry.getOwner().getLogin(),
+                Call<List<Commit>> call = mService.getCommits(entry.getOwner().getLogin(),
                         entry.getName(), 1, authToken);
                 try {
                     Commit commit = call.execute().body().get(0);
