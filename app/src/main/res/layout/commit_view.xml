@@ -23,7 +23,7 @@
         android:layout_weight="2"
         android:fontFamily="sans-serif-medium"
         android:textAppearance="?android:textAppearanceLarge"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorMainText" />
 
     <TextView
         android:id="@+id/commit_info_tv"

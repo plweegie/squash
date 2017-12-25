@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:fontFamily="sans-serif-medium"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorMainText"
             android:textAppearance="?android:textAppearanceMedium"
             android:textStyle="bold" />
         
