@@ -27,7 +27,7 @@
 
         <Button
             android:id="@+id/login_btn"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/colorMainText"
             android:text="@string/login"
             android:textColor="@android:color/white"
             android:layout_gravity="center_horizontal"

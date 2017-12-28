@@ -53,6 +53,9 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     @Inject
     GitHubService mService;
 
+    @Inject
+    QueryPreferences mQueryPrefs;
+
     private String[] mRepoProps;
     private TextView mMessageTextView;
     private TextView mInfoTextView;
@@ -91,7 +94,7 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        String authToken = QueryPreferences.getStoredAccessToken(this);
+        String authToken = mQueryPrefs.getStoredAccessToken();
         Call<List<Commit>> call = mService.getCommits(mRepoProps[0], mRepoProps[1], 1,
                 authToken);
 

@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -67,6 +66,12 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     @Inject
     GitHubService mService;
 
+    @Inject
+    SharedPreferences mSharedPrefs;
+
+    @Inject
+    QueryPreferences mQueryPrefs;
+
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private int currentPage = START_PAGE;
@@ -78,7 +83,6 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     private ProgressBar mIndicator;
     private InputMethodManager mImm;
 
-    private SharedPreferences mSharedPrefs;
     private SharedPreferences.OnSharedPreferenceChangeListener mListener;
 
     public static RepoListFragment newInstance() {
@@ -90,8 +94,6 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mDataRepository = Injectors.provideRepository(getActivity());
-
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -187,7 +189,7 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
                 mRecyclerView.setVisibility(View.INVISIBLE);
                 mIndicator.setVisibility(View.VISIBLE);
                 
-                QueryPreferences.setStoredQuery(getActivity(), string);
+                mQueryPrefs.setStoredQuery(string);
                 isLoading = false;
                 isLastPage = false;
                 currentPage = START_PAGE;
@@ -207,7 +209,7 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String query = QueryPreferences.getStoredQuery(getActivity());
+                String query = mQueryPrefs.getStoredQuery();
                 searchView.setQuery(query, false);
             }
         });
@@ -232,8 +234,8 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     
     private void updateUI() {
 
-        final String apiQuery = QueryPreferences.getStoredQuery(getActivity());
-        final String authToken = QueryPreferences.getStoredAccessToken(getActivity());
+        final String apiQuery = mQueryPrefs.getStoredQuery();
+        final String authToken = mQueryPrefs.getStoredAccessToken();
         Call<List<RepoEntry>> call = mService.getRepos(apiQuery, currentPage, authToken);
         call.enqueue(new Callback<List<RepoEntry>>() {
 

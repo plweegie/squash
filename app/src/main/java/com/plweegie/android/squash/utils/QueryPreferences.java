@@ -1,7 +1,6 @@
 package com.plweegie.android.squash.utils;
 
-import android.content.Context;
-import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.plweegie.android.squash.data.Commit;
@@ -10,39 +9,39 @@ import com.plweegie.android.squash.data.RepoEntry;
 import java.text.ParseException;
 import java.util.Comparator;
 
+import javax.inject.Inject;
+
 
 public class QueryPreferences {
 
     private static final String PREF_SEARCH_QUERY = "searchQuery";
     private static final String PREF_LAST_RESULT_DATE = "lastResultDate";
 
-    public static String getStoredQuery(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREF_SEARCH_QUERY, null);
+    SharedPreferences mPrefs;
+
+    @Inject
+    public QueryPreferences(SharedPreferences prefs) {
+        this.mPrefs = prefs;
     }
 
-    public static void setStoredQuery(Context context, String query) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putString(PREF_SEARCH_QUERY, query)
-                .apply();
+    public String getStoredQuery() {
+        return mPrefs.getString(PREF_SEARCH_QUERY, null);
     }
 
-    public static String getStoredAccessToken(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(AuthUtils.PREFERENCE_NAME, null);
+    public void setStoredQuery(String query) {
+        mPrefs.edit().putString(PREF_SEARCH_QUERY, query).apply();
     }
 
-    public static long getLastResultDate(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getLong(PREF_LAST_RESULT_DATE, 0L);
+    public String getStoredAccessToken() {
+        return mPrefs.getString(AuthUtils.PREFERENCE_NAME, null);
     }
 
-    public static void setLastResultDate(Context context, long date) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putLong(PREF_LAST_RESULT_DATE, date)
-                .apply();
+    public long getLastResultDate() {
+        return mPrefs.getLong(PREF_LAST_RESULT_DATE, 0L);
+    }
+
+    public void setLastResultDate(long date) {
+        mPrefs.edit().putLong(PREF_LAST_RESULT_DATE, date).apply();
     }
 
     public static class RepoNameComparator implements Comparator<RepoEntry> {

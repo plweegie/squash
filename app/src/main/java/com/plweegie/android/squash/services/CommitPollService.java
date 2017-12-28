@@ -61,6 +61,9 @@ public class CommitPollService extends JobService {
     @Inject
     GitHubService mService;
 
+    @Inject
+    QueryPreferences mQueryPrefs;
+
     private CommitPollTask mTask;
 
     public CommitPollService() {
@@ -104,10 +107,10 @@ public class CommitPollService extends JobService {
 
             List<Commit> commits = new ArrayList<>();
 
-            long lastDate = QueryPreferences.getLastResultDate(mContext);
+            long lastDate = mQueryPrefs.getLastResultDate();
             long newLastDate = 0L;
 
-            String authToken = QueryPreferences.getStoredAccessToken(mContext);
+            String authToken = mQueryPrefs.getStoredAccessToken();
 
             for (RepoEntry entry: repos) {
                 Call<List<Commit>> call = mService.getCommits(entry.getOwner().getLogin(),
@@ -158,7 +161,7 @@ public class CommitPollService extends JobService {
                         .from(CommitPollService.this);
                 notifManager.notify(0, notif);
 
-                QueryPreferences.setLastResultDate(mContext, newLastDate);
+                mQueryPrefs.setLastResultDate(newLastDate);
             }
             jobFinished(jobParams, false);
             return null;

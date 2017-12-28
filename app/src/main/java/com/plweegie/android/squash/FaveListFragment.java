@@ -69,6 +69,9 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
     @Inject
     GitHubService mService;
+
+    @Inject
+    QueryPreferences mQueryPrefs;
     
     private RecyclerView mRecyclerView;
     private RepoRepository mDataRepository;
@@ -90,7 +93,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         FaveListViewModelFactory factory = new FaveListViewModelFactory(mDataRepository);
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(FaveListViewModel.class);
 
-        mAuthToken = QueryPreferences.getStoredAccessToken(getActivity());
+        mAuthToken = mQueryPrefs.getStoredAccessToken();
 
         JobScheduler scheduler = (JobScheduler) getActivity()
                 .getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -161,7 +164,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
             if (!repoLastCommits.isEmpty()) {
                 Collections.sort(repoLastCommits, new QueryPreferences.CommitCreatedComparator());
-                long lastDate = QueryPreferences.getLastResultDate(getActivity());
+                long lastDate = mQueryPrefs.getLastResultDate();
                 long newLastDate = 0L;
                 try {
                     newLastDate = DateUtils.convertToTimestamp(repoLastCommits.get(0).getCommitBody()
@@ -171,7 +174,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
                 }
 
                 if (newLastDate > lastDate) {
-                    QueryPreferences.setLastResultDate(getActivity(), newLastDate);
+                    mQueryPrefs.setLastResultDate(newLastDate);
                 }
             }
         });

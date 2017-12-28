@@ -19,8 +19,7 @@
             android:layout_width="match_parent"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/colorMainText"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:textStyle="bold" />
+            android:textAppearance="?android:textAppearanceMedium" />
         
         <TextView
             android:id="@+id/repo_language_tv"
