@@ -93,22 +93,22 @@ public class CommitPollService extends JobService {
     private class CommitPollTask extends AsyncTask<JobParameters, Void, Void> {
 
         private Context mContext;
+        private List<Commit> mCommits;
 
         public CommitPollTask(Context context) {
             mContext = context;
         }
 
         @Override
+        protected void onPreExecute() {
+            mCommits = new ArrayList<>();
+        }
+
+        @Override
         protected Void doInBackground(JobParameters... params) {
             JobParameters jobParams = params[0];
 
-            RepoRepository repository = Injectors.provideRepository(mContext);
-            List<RepoEntry> repos = repository.getAllFavoritesDirectly();
-
-            List<Commit> commits = new ArrayList<>();
-
-            long lastDate = mQueryPrefs.getLastResultDate();
-            long newLastDate = 0L;
+            List<RepoEntry> repos = Injectors.provideRepository(mContext).getAllFavoritesDirectly();
 
             String authToken = mQueryPrefs.getStoredAccessToken();
 
@@ -117,25 +117,34 @@ public class CommitPollService extends JobService {
                         entry.getName(), 1, authToken);
                 try {
                     Commit commit = call.execute().body().get(0);
-                    commits.add(commit);
+                    mCommits.add(commit);
                 } catch(IOException e) {
                     Log.e(TAG, "Error checking for new commits");
                     jobFinished(jobParams, true);
                 }
             }
+            jobFinished(jobParams, false);
+            return null;
+        }
 
-            Collections.sort(commits, new QueryPreferences.CommitCreatedComparator());
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            long lastDate = mQueryPrefs.getLastResultDate();
+            long newLastDate = 0L;
+
+            Collections.sort(mCommits, new QueryPreferences.CommitCreatedComparator());
 
             try {
-                newLastDate = commits.isEmpty() ? lastDate :
-                        DateUtils.convertToTimestamp(commits.get(0).getCommitBody()
+                newLastDate = mCommits.isEmpty() ? lastDate :
+                        DateUtils.convertToTimestamp(mCommits.get(0).getCommitBody()
                                 .getCommitBodyAuthor().getDate());
             } catch (ParseException e) {
                 Log.e("CommitPollService", "Date parser error: " + e);
             }
 
-            if(newLastDate > lastDate) {
-                Commit updatedCommit = commits.get(0);
+            if (newLastDate > lastDate) {
+                Commit updatedCommit = mCommits.get(0);
                 String commitRepo = updatedCommit.getHtmlUrl().split("/")[4];
                 String commitOwner = updatedCommit.getHtmlUrl().split("/")[3];
 
@@ -149,9 +158,7 @@ public class CommitPollService extends JobService {
                         NotificationChannel.DEFAULT_CHANNEL_ID)
                         .setTicker(getResources().getString(R.string.new_commit_headline))
                         .setContentTitle(getResources().getString(R.string.new_commit_headline))
-                        //.setContentTitle(String.valueOf(lastDate))
                         .setContentText(commitRepo)
-                        //.setContentText(String.valueOf(newLastDate))
                         .setContentIntent(pi)
                         .setSmallIcon(R.drawable.ic_info_24dp)
                         .setAutoCancel(true)
@@ -163,8 +170,6 @@ public class CommitPollService extends JobService {
 
                 mQueryPrefs.setLastResultDate(newLastDate);
             }
-            jobFinished(jobParams, false);
-            return null;
         }
     }
 }
