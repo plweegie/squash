@@ -23,31 +23,36 @@ import android.support.annotation.NonNull;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class AppExecutors {
 
     // For Singleton instantiation
-    private static final Object LOCK = new Object();
-    private static AppExecutors sInstance;
+//    private static final Object LOCK = new Object();
+//    private static AppExecutors sInstance;
     private final Executor diskIO;
     private final Executor mainThread;
     private final Executor networkIO;
 
-    private AppExecutors(Executor diskIO, Executor networkIO, Executor mainThread) {
-        this.diskIO = diskIO;
-        this.networkIO = networkIO;
-        this.mainThread = mainThread;
+    @Inject
+    public AppExecutors() {
+        this.diskIO = Executors.newSingleThreadExecutor();
+        this.networkIO = Executors.newFixedThreadPool(3);
+        this.mainThread = new MainThreadExecutor();
     }
 
-    public static AppExecutors getInstance() {
-        if (sInstance == null) {
-            synchronized (LOCK) {
-                sInstance = new AppExecutors(Executors.newSingleThreadExecutor(),
-                        Executors.newFixedThreadPool(3),
-                        new MainThreadExecutor());
-            }
-        }
-        return sInstance;
-    }
+//    public static AppExecutors getInstance() {
+//        if (sInstance == null) {
+//            synchronized (LOCK) {
+//                sInstance = new AppExecutors(Executors.newSingleThreadExecutor(),
+//                        Executors.newFixedThreadPool(3),
+//                        new MainThreadExecutor());
+//            }
+//        }
+//        return sInstance;
+//    }
 
     public Executor diskIO() {
         return diskIO;

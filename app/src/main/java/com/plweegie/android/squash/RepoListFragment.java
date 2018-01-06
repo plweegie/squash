@@ -76,7 +76,8 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     private boolean isLastPage = false;
     private int currentPage = START_PAGE;
 
-    private RepoRepository mDataRepository;
+    @Inject
+    RepoRepository mDataRepository;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mManager;
     private RepoAdapter mAdapter;
@@ -93,7 +94,6 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mDataRepository = Injectors.provideRepository(getActivity());
 
         mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override

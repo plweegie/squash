@@ -64,6 +64,9 @@ public class CommitPollService extends JobService {
     @Inject
     QueryPreferences mQueryPrefs;
 
+    @Inject
+    RepoRepository mDataRepository;
+
     private CommitPollTask mTask;
 
     public CommitPollService() {
@@ -108,7 +111,7 @@ public class CommitPollService extends JobService {
         protected Void doInBackground(JobParameters... params) {
             JobParameters jobParams = params[0];
 
-            List<RepoEntry> repos = Injectors.provideRepository(mContext).getAllFavoritesDirectly();
+            List<RepoEntry> repos = mDataRepository.getAllFavoritesDirectly();
 
             String authToken = mQueryPrefs.getStoredAccessToken();
 

@@ -69,12 +69,12 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
     @Inject
     GitHubService mService;
-
     @Inject
     QueryPreferences mQueryPrefs;
+    @Inject
+    RepoRepository mDataRepository;
     
     private RecyclerView mRecyclerView;
-    private RepoRepository mDataRepository;
     private FaveAdapter mAdapter;
     private ProgressBar mIndicator;
     private FaveListViewModel mViewModel;
@@ -89,7 +89,6 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        mDataRepository = Injectors.provideRepository(getActivity());
         FaveListViewModelFactory factory = new FaveListViewModelFactory(mDataRepository);
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(FaveListViewModel.class);
 

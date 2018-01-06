@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AppModule.class, NetModule.class, SharedPrefModule.class})
+@Component(modules = {AppModule.class, NetModule.class, SharedPrefModule.class, RoomModule.class})
 public interface NetComponent {
     void inject(LastCommitDetailsActivity lastCommitDetailsActivity);
     void inject(RepoListFragment fragment);
