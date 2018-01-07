@@ -23,6 +23,8 @@ package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.plweegie.android.squash.FaveDeleteDialog;
 import com.plweegie.android.squash.LastCommitDetailsActivity;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;
@@ -38,6 +41,8 @@ import java.util.List;
 
 
 public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
+
+    private static final String DELETE_DIALOG = "delete_dialog";
 
     private List<RepoEntry> mRepos;
     private Context mContext;
@@ -113,11 +118,18 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
             mWatchCountTextView.setText(Integer.toString(repo.getWatchersCount()));
 
             mDeleteImgView.setImageResource(R.drawable.ic_delete_black_24dp);
+            mDeleteImgView.getDrawable()
+                    .setColorFilter(mContext.getResources().getColor(R.color.colorAlert),
+                            PorterDuff.Mode.SRC_IN);
             mDeleteImgView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    mClickHandler.onItemClick(mRepos.get(position).getRepoId());
+
+                    FaveDeleteDialog dialog = new FaveDeleteDialog();
+                    dialog.show(((FragmentActivity) mContext).getSupportFragmentManager(),
+                            DELETE_DIALOG);
+                    dialog.setClickHandler(mClickHandler, mRepos.get(position).getRepoId());
                 }
             });
 
