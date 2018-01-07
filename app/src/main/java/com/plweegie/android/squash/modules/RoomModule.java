@@ -3,7 +3,6 @@ package com.plweegie.android.squash.modules;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 
 import com.plweegie.android.squash.data.RepoDatabase;
 

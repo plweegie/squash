@@ -45,7 +45,6 @@ import com.plweegie.android.squash.adapters.RepoAdapter;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
-import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.PaginationScrollListener;
 import com.plweegie.android.squash.utils.QueryPreferences;
 

@@ -12,3 +12,4 @@ projectFilesBackup/
 release/
 .externalNativeBuild
 github_access_ids.xml
+google-services.json

@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.utils.DateUtils;

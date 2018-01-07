@@ -42,7 +42,6 @@ import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.utils.DateUtils;
-import com.plweegie.android.squash.utils.Injectors;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.io.IOException;
