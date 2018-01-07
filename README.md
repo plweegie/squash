@@ -7,5 +7,6 @@ through **LiveData** and **ViewModel** for displaying the favorites list in UI.
 ## How to run
 You will need an up-to-date version of Android Studio and a phone running Android 5.0 (Marshmallow) or higher. After cloning the repo, just build and run the app - simple as that!
 
-## TODO
-* Docs
+## UPDATE January 2018:
+Now live in the [Play Store](https://play.google.com/store/apps/details?id=com.plweegie.android.squash)!
+
