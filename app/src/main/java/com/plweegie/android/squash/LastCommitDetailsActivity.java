@@ -28,9 +28,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
-import android.util.Log;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.utils.DateUtils;
@@ -110,7 +110,8 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Commit>> call, Throwable t) {
-                Log.e("LastCommitFragment", "Retrofit error: " + t);
+                Crashlytics.log(1, "LastCommitDetails", "Retrofit error");
+                Crashlytics.logException(t);
             }
         });
     }
@@ -137,7 +138,8 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
         try {
             formattedDate = DateUtils.changeDateFormats(date);
         } catch (ParseException e) {
-            Log.e("CommitAdapter", "Date parser error: " + e);
+            Crashlytics.log("Date parser error");
+            Crashlytics.logException(e);
         }
 
         String result = this.getResources().getString(R.string.commit_date, formattedDate);

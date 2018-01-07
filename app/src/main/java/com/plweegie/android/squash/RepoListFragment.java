@@ -30,7 +30,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +40,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.plweegie.android.squash.adapters.RepoAdapter;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
@@ -228,7 +228,6 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     @Override
     public void onItemClick(int position) {
         mDataRepository.addFavorite(mAdapter.getItem(position));
-        Log.d("RepoListFragment", "pos " + position + " clicked");
     }
     
     private void updateUI() {
@@ -268,7 +267,8 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
 
             @Override
             public void onFailure(Call<List<RepoEntry>> call, Throwable t) {
-                Log.e("RepoListFragment", "Retrofit error: " + t);
+                Crashlytics.log(1, "RepoListFragment", "Retrofit error");
+                Crashlytics.logException(t);
             }
         });
     }

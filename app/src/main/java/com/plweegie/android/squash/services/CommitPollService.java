@@ -32,8 +32,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.plweegie.android.squash.App;
 import com.plweegie.android.squash.LastCommitDetailsActivity;
 import com.plweegie.android.squash.R;
@@ -121,7 +121,8 @@ public class CommitPollService extends JobService {
                     Commit commit = call.execute().body().get(0);
                     mCommits.add(commit);
                 } catch(IOException e) {
-                    Log.e(TAG, "Error checking for new commits");
+                    Crashlytics.log("Error checking for new commits");
+                    Crashlytics.logException(e);
                     jobFinished(jobParams, true);
                 }
             }
@@ -142,7 +143,8 @@ public class CommitPollService extends JobService {
                         DateUtils.convertToTimestamp(mCommits.get(0).getCommitBody()
                                 .getCommitBodyAuthor().getDate());
             } catch (ParseException e) {
-                Log.e("CommitPollService", "Date parser error: " + e);
+                Crashlytics.log("Date Parser error");
+                Crashlytics.logException(e);
             }
 
             if (newLastDate > lastDate) {

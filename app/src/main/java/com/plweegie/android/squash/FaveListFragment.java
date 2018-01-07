@@ -31,7 +31,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.crashlytics.android.Crashlytics;
 import com.plweegie.android.squash.adapters.FaveAdapter;
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
@@ -155,7 +155,8 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
                     @Override
                     public void onFailure(Call<List<Commit>> call, Throwable t) {
-                        Log.e("LastCommitFragment", "Retrofit error: " + t);
+                        Crashlytics.log("Retrofit error");
+                        Crashlytics.logException(t);
                     }
                 });
             }
@@ -168,7 +169,8 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
                     newLastDate = DateUtils.convertToTimestamp(repoLastCommits.get(0).getCommitBody()
                                     .getCommitBodyAuthor().getDate());
                 } catch(ParseException e) {
-                    Log.e("FaveListFragment", "Date parser error: " + e);
+                    Crashlytics.log("Date parser error");
+                    Crashlytics.logException(e);
                 }
 
                 if (newLastDate > lastDate) {
