@@ -9,6 +9,7 @@ import com.plweegie.android.squash.modules.NetComponent;
 import com.plweegie.android.squash.modules.NetModule;
 import com.plweegie.android.squash.modules.RoomModule;
 import com.plweegie.android.squash.modules.SharedPrefModule;
+import com.squareup.leakcanary.LeakCanary;
 
 public class App extends Application {
 
@@ -20,6 +21,11 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        LeakCanary.install(this);
 
         mNetComponent = DaggerNetComponent.builder()
                 .appModule(new AppModule(this))
