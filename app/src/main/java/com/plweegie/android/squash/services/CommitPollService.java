@@ -22,6 +22,7 @@
 
 package com.plweegie.android.squash.services;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.PendingIntent;
@@ -31,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 
 import com.crashlytics.android.Crashlytics;
 import com.plweegie.android.squash.App;
@@ -56,6 +56,12 @@ import retrofit2.Call;
 
 public class CommitPollService extends JobService {
     private static final String TAG = "CommitPollService";
+    public static final String ACTION_SHOW_NOTIFICATION =
+            "com.plweegie.android.squash.SHOW_NOTIFICATION";
+    public static final String PERMISSION_PRIVATE =
+            "com.plweegie.android.squash.PRIVATE";
+    public static final String REQUEST_CODE = "request_code";
+    public static final String NOTIFICATION = "notification";
 
     @Inject
     GitHubService mService;
@@ -168,12 +174,18 @@ public class CommitPollService extends JobService {
                         .setAutoCancel(true)
                         .build();
 
-                NotificationManagerCompat notifManager = NotificationManagerCompat
-                        .from(CommitPollService.this);
-                notifManager.notify(0, notif);
+                showBackgroundNotif(0, notif);
 
                 mQueryPrefs.setLastResultDate(newLastDate);
             }
+        }
+
+        private void showBackgroundNotif(int requestCode, Notification notif) {
+            Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
+            i.putExtra(REQUEST_CODE, requestCode);
+            i.putExtra(NOTIFICATION, notif);
+            sendOrderedBroadcast(i, PERMISSION_PRIVATE, null, null,
+                    Activity.RESULT_OK, null, null);
         }
     }
 }

@@ -21,10 +21,7 @@
  */
 package com.plweegie.android.squash;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,9 +42,9 @@ import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
-import com.plweegie.android.squash.services.CommitPollService;
 import com.plweegie.android.squash.utils.DateUtils;
 import com.plweegie.android.squash.utils.QueryPreferences;
+import com.plweegie.android.squash.utils.SchedulerUtil;
 import com.plweegie.android.squash.viewmodels.FaveListViewModel;
 import com.plweegie.android.squash.viewmodels.FaveListViewModelFactory;
 
@@ -63,8 +60,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapterOnClickHandler {
-
-    private static final int POLL_JOB_ID = 112;
 
     @Inject
     GitHubService mService;
@@ -93,25 +88,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
         mAuthToken = mQueryPrefs.getStoredAccessToken();
 
-        JobScheduler scheduler = (JobScheduler) getActivity()
-                .getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-        boolean hasBeenScheduled = false;
-        for (JobInfo info: scheduler.getAllPendingJobs()) {
-            if(info.getId() == POLL_JOB_ID) {
-                hasBeenScheduled = true;
-            }
-        }
-
-        if (!hasBeenScheduled) {
-            JobInfo jobInfo = new JobInfo.Builder(POLL_JOB_ID,
-                    new ComponentName(getActivity(), CommitPollService.class))
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(60 * 60 * 1000)
-                    .setPersisted(true)
-                    .build();
-            scheduler.schedule(jobInfo);
-        }
+        SchedulerUtil.scheduleCommitPoll(getActivity());
     }
 
     @Override
