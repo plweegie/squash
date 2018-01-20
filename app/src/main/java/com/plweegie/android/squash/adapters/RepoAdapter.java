@@ -24,12 +24,10 @@ package com.plweegie.android.squash.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.plweegie.android.squash.R;
@@ -37,34 +35,21 @@ import com.plweegie.android.squash.SettingsFragment;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 
-public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
-    
-    private List<RepoEntry> mRepos;
-    private Context mContext;
-    private Comparator<RepoEntry> mComparator;
+public class RepoAdapter extends BaseGithubAdapter {
 
-    private final RepoAdapterOnClickHandler mClickHandler;
-    
+    private Comparator<RepoEntry> mComparator;
+    private RepoAdapterOnClickHandler mClickHandler;
+
     public RepoAdapter(Context context,
                        RepoAdapterOnClickHandler clickHandler) {
-        mContext = context;
-        mRepos = new ArrayList<>();
-        mClickHandler = clickHandler;
+        super(context);
         mComparator = new QueryPreferences.RepoNameComparator();
-    }
-
-    public List<RepoEntry> getRepos() {
-        return mRepos;
-    }
-
-    public void setRepos(List<RepoEntry> repos) {
-        mRepos = repos;
+        mClickHandler = clickHandler;
     }
 
     @Override
@@ -74,20 +59,8 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         return new RepoHolder(inflater, vg, R.layout.repo_view_holder);
     }
 
-    @Override
-    public void onBindViewHolder(RepoHolder vh, int i) {
-        RepoEntry repo = mRepos.get(i);
-        vh.bind(repo);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mRepos == null ? 0 : mRepos.size();
-    }
-    
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public List<RepoEntry> getRepos() {
+        return mRepos;
     }
 
     public void add(RepoEntry repo) {
@@ -133,46 +106,25 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoHolder> {
         notifyDataSetChanged();
     }
 
-    public boolean isEmpty() {
-        return getItemCount() == 0;
-    }
-
-    public RepoEntry getItem(int position) {
-        return mRepos.get(position);
-    }
-
     public interface RepoAdapterOnClickHandler {
         void onItemClick(int position);
     }
-    
-    public class RepoHolder extends RecyclerView.ViewHolder {
-        
-        private TextView mNameTextView;
-        private TextView mLangTextView;
-        private TextView mStarCountTextView;
-        private TextView mWatchCountTextView;
+
+    public class RepoHolder extends BaseViewHolder {
+
         private ImageView mFavoriteImgView;
         private ImageView mInvisibleImgView;
 
         public RepoHolder(LayoutInflater inflater, ViewGroup parent,
                 int layoutResId) {
-            super(inflater.inflate(layoutResId, parent, false));
-
-            mNameTextView = itemView.findViewById(R.id.repo_name_tv);
-            mLangTextView = itemView.findViewById(R.id.repo_language_tv);
-            mStarCountTextView = itemView.findViewById(R.id.stars_tv);
-            mWatchCountTextView = itemView.findViewById(R.id.watchers_tv);
+            super(inflater, parent, layoutResId);
             mFavoriteImgView = itemView.findViewById(R.id.fave_image_view);
             mInvisibleImgView = itemView.findViewById(R.id.last_commit_image_view);
         }
         
         public void bind(RepoEntry repo) {
-            
-            mNameTextView.setText(repo.getName());
-            mLangTextView.setText(repo.getLanguage());
-            mStarCountTextView.setText(Integer.toString(repo.getStargazersCount()));
-            mWatchCountTextView.setText(Integer.toString(repo.getWatchersCount()));
 
+            super.bind(repo);
             mInvisibleImgView.setVisibility(View.GONE);
 
             mFavoriteImgView.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);

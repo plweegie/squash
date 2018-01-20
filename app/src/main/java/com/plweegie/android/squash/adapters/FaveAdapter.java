@@ -25,31 +25,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.plweegie.android.squash.FaveDeleteDialog;
 import com.plweegie.android.squash.LastCommitDetailsActivity;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;
 
-import java.util.List;
 
-
-public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
+public class FaveAdapter extends BaseGithubAdapter {
 
     private static final String DELETE_DIALOG = "delete_dialog";
 
-    private List<RepoEntry> mRepos;
-    private Context mContext;
     private FaveAdapterOnClickHandler mClickHandler;
 
     public FaveAdapter(Context context, FaveAdapterOnClickHandler clickHandler) {
-        mContext = context;
+        super(context);
         mClickHandler = clickHandler;
     }
 
@@ -60,63 +54,25 @@ public class FaveAdapter extends RecyclerView.Adapter<FaveAdapter.FaveHolder> {
         return new FaveHolder(inflater, vg, R.layout.repo_view_holder);
     }
 
-    @Override
-    public void onBindViewHolder(FaveHolder vh, int i) {
-        RepoEntry repo = mRepos.get(i);
-        vh.bind(repo);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mRepos == null ? 0 : mRepos.size();
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    public RepoEntry getItem(int position) {
-        return mRepos.get(position);
-    }
-
-    public void setContent(List<RepoEntry> repos) {
-        mRepos = repos;
-        notifyDataSetChanged();
-    }
-
     public interface FaveAdapterOnClickHandler {
         void onItemClick(long repoId);
     }
 
-    public class FaveHolder extends RecyclerView.ViewHolder {
+    public class FaveHolder extends BaseViewHolder {
 
-        protected TextView mNameTextView;
-        protected TextView mLangTextView;
-        protected TextView mStarCountTextView;
-        protected TextView mWatchCountTextView;
-        protected ImageView mDeleteImgView;
-        protected ImageView mInfoImageView;
+        private ImageView mDeleteImgView;
+        private ImageView mInfoImageView;
 
         public FaveHolder(LayoutInflater inflater, ViewGroup parent,
                           int layoutResId) {
-            super(inflater.inflate(layoutResId, parent, false));
-
-            mNameTextView = itemView.findViewById(R.id.repo_name_tv);
-            mLangTextView = itemView.findViewById(R.id.repo_language_tv);
-            mStarCountTextView = itemView.findViewById(R.id.stars_tv);
-            mWatchCountTextView = itemView.findViewById(R.id.watchers_tv);
+            super(inflater, parent, layoutResId);
             mDeleteImgView = itemView.findViewById(R.id.fave_image_view);
             mInfoImageView = itemView.findViewById(R.id.last_commit_image_view);
         }
 
         public void bind(RepoEntry repo) {
 
-            mNameTextView.setText(repo.getName());
-            mLangTextView.setText(repo.getLanguage());
-            mStarCountTextView.setText(Integer.toString(repo.getStargazersCount()));
-            mWatchCountTextView.setText(Integer.toString(repo.getWatchersCount()));
-
+            super.bind(repo);
             mDeleteImgView.setImageResource(R.drawable.ic_delete_black_24dp);
             mDeleteImgView.getDrawable()
                     .setColorFilter(mContext.getResources().getColor(R.color.colorAlert),
