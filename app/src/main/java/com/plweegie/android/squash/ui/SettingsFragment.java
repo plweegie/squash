@@ -1,8 +1,10 @@
-package com.plweegie.android.squash;
+package com.plweegie.android.squash.ui;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
+
+import com.plweegie.android.squash.R;
 
 public class SettingsFragment extends PreferenceFragment {
     public static final String KEY_PREF_SORT_BY_SETTING = "pref_sortBySetting";

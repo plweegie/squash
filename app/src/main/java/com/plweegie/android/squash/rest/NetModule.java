@@ -1,11 +1,10 @@
-package com.plweegie.android.squash.modules;
+package com.plweegie.android.squash.rest;
 
 
 import android.app.Application;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.plweegie.android.squash.rest.GitHubService;
 
 import javax.inject.Singleton;
 

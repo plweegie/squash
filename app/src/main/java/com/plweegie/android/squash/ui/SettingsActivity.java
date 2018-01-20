@@ -1,4 +1,4 @@
-package com.plweegie.android.squash;
+package com.plweegie.android.squash.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

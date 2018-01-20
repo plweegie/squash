@@ -26,9 +26,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.plweegie.android.squash.FaveListFragment;
 import com.plweegie.android.squash.R;
-import com.plweegie.android.squash.RepoListFragment;
+import com.plweegie.android.squash.ui.FaveListFragment;
+import com.plweegie.android.squash.ui.RepoListFragment;
 
 
 public class GithubPagerAdapter extends FragmentStatePagerAdapter {

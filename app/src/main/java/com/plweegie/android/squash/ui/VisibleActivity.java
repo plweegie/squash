@@ -1,4 +1,4 @@
-package com.plweegie.android.squash;
+package com.plweegie.android.squash.ui;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;

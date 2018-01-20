@@ -3,12 +3,11 @@ package com.plweegie.android.squash;
 
 import android.app.Application;
 
-import com.plweegie.android.squash.modules.AppModule;
-import com.plweegie.android.squash.modules.DaggerNetComponent;
-import com.plweegie.android.squash.modules.NetComponent;
-import com.plweegie.android.squash.modules.NetModule;
-import com.plweegie.android.squash.modules.RoomModule;
-import com.plweegie.android.squash.modules.SharedPrefModule;
+import com.plweegie.android.squash.data.RoomModule;
+import com.plweegie.android.squash.rest.DaggerNetComponent;
+import com.plweegie.android.squash.rest.NetComponent;
+import com.plweegie.android.squash.rest.NetModule;
+import com.plweegie.android.squash.rest.SharedPrefModule;
 import com.squareup.leakcanary.LeakCanary;
 
 public class App extends Application {

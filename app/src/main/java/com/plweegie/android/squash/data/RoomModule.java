@@ -1,10 +1,8 @@
-package com.plweegie.android.squash.modules;
+package com.plweegie.android.squash.data;
 
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
-
-import com.plweegie.android.squash.data.RepoDatabase;
 
 import javax.inject.Singleton;
 

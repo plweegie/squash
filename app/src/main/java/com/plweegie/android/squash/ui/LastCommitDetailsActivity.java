@@ -20,7 +20,7 @@
  SOFTWARE.
  */
 
-package com.plweegie.android.squash;
+package com.plweegie.android.squash.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +31,8 @@ import android.text.Html;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.plweegie.android.squash.App;
+import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.utils.DateUtils;

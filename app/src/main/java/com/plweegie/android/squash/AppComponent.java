@@ -1,6 +1,4 @@
-package com.plweegie.android.squash.modules;
-
-import com.plweegie.android.squash.App;
+package com.plweegie.android.squash;
 
 import javax.inject.Singleton;
 

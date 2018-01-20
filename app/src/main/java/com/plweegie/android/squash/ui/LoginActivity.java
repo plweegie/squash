@@ -1,4 +1,4 @@
-package com.plweegie.android.squash;
+package com.plweegie.android.squash.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.auth.GithubOauth;
 import com.plweegie.android.squash.auth.ResultCode;
 
@@ -37,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
                         .withContext(mActivity)
                         .withScopeList(new ArrayList(Arrays.asList("public_repo")))
                         .packageName("com.plweegie.android.squash")
-                        .nextActivity("com.plweegie.android.squash.GithubPagerActivity")
+                        .nextActivity("com.plweegie.android.squash.ui.GithubPagerActivity")
                         .debug(true)
                         .execute();
             }

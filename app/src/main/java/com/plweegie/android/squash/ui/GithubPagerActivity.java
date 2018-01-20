@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-package com.plweegie.android.squash;
+package com.plweegie.android.squash.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
+import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.adapters.GithubPagerAdapter;
 import com.plweegie.android.squash.utils.AuthUtils;
 

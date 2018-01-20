@@ -35,12 +35,12 @@ import android.support.v4.app.NotificationCompat;
 
 import com.crashlytics.android.Crashlytics;
 import com.plweegie.android.squash.App;
-import com.plweegie.android.squash.LastCommitDetailsActivity;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
+import com.plweegie.android.squash.ui.LastCommitDetailsActivity;
 import com.plweegie.android.squash.utils.DateUtils;
 import com.plweegie.android.squash.utils.QueryPreferences;
 

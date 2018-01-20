@@ -1,10 +1,12 @@
-package com.plweegie.android.squash.modules;
+package com.plweegie.android.squash.rest;
 
 
-import com.plweegie.android.squash.FaveListFragment;
-import com.plweegie.android.squash.LastCommitDetailsActivity;
-import com.plweegie.android.squash.RepoListFragment;
+import com.plweegie.android.squash.AppModule;
+import com.plweegie.android.squash.data.RoomModule;
 import com.plweegie.android.squash.services.CommitPollService;
+import com.plweegie.android.squash.ui.FaveListFragment;
+import com.plweegie.android.squash.ui.LastCommitDetailsActivity;
+import com.plweegie.android.squash.ui.RepoListFragment;
 
 import javax.inject.Singleton;
 

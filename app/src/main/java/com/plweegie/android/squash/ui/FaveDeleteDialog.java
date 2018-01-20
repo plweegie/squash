@@ -1,4 +1,4 @@
-package com.plweegie.android.squash;
+package com.plweegie.android.squash.ui;
 
 
 import android.app.Dialog;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.adapters.FaveAdapter;
 
 public class FaveDeleteDialog extends DialogFragment {

@@ -31,8 +31,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.plweegie.android.squash.R;
-import com.plweegie.android.squash.SettingsFragment;
 import com.plweegie.android.squash.data.RepoEntry;
+import com.plweegie.android.squash.ui.SettingsFragment;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.util.Collections;

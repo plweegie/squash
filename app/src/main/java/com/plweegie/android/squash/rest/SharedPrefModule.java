@@ -1,4 +1,4 @@
-package com.plweegie.android.squash.modules;
+package com.plweegie.android.squash.rest;
 
 
 import android.app.Application;

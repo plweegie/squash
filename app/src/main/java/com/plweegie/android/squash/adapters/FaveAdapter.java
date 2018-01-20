@@ -30,10 +30,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.plweegie.android.squash.FaveDeleteDialog;
-import com.plweegie.android.squash.LastCommitDetailsActivity;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;
+import com.plweegie.android.squash.ui.FaveDeleteDialog;
+import com.plweegie.android.squash.ui.LastCommitDetailsActivity;
 
 
 public class FaveAdapter extends BaseGithubAdapter {

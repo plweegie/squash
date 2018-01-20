@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-package com.plweegie.android.squash;
+package com.plweegie.android.squash.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +41,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.plweegie.android.squash.App;
+import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.adapters.RepoAdapter;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
