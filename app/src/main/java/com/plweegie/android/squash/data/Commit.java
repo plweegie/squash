@@ -44,6 +44,9 @@ public class Commit {
         @SerializedName("author")
         @Expose
         private CommitBodyAuthor commitBodyAuthor;
+        @SerializedName("committer")
+        @Expose
+        private Committer committer;
         @SerializedName("message")
         @Expose
         private String message;
@@ -54,6 +57,14 @@ public class Commit {
 
         public void setCommitBodyAuthor(CommitBodyAuthor commitBodyAuthor) {
             this.commitBodyAuthor = commitBodyAuthor;
+        }
+
+        public Committer getCommitter() {
+            return committer;
+        }
+
+        public void setCommitter(Committer committer) {
+            this.committer = committer;
         }
 
         public String getMessage() {
@@ -69,9 +80,6 @@ public class Commit {
             @SerializedName("name")
             @Expose
             private String name;
-            @SerializedName("date")
-            @Expose
-            private String date;
 
             public String getName() {
                 return name;
@@ -80,6 +88,13 @@ public class Commit {
             public void setName(String name) {
                 this.name = name;
             }
+        }
+
+        public static class Committer {
+
+            @SerializedName("date")
+            @Expose
+            private String date;
 
             public String getDate() {
                 return date;

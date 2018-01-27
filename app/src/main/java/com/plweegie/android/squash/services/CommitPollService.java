@@ -147,7 +147,7 @@ public class CommitPollService extends JobService {
             try {
                 newLastDate = mCommits.isEmpty() ? lastDate :
                         DateUtils.convertToTimestamp(mCommits.get(0).getCommitBody()
-                                .getCommitBodyAuthor().getDate());
+                                .getCommitter().getDate());
             } catch (ParseException e) {
                 Crashlytics.log("Date Parser error");
                 Crashlytics.logException(e);

@@ -146,7 +146,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
                 long newLastDate = 0L;
                 try {
                     newLastDate = DateUtils.convertToTimestamp(repoLastCommits.get(0).getCommitBody()
-                                    .getCommitBodyAuthor().getDate());
+                                    .getCommitter().getDate());
                 } catch(ParseException e) {
                     Crashlytics.log("Date parser error");
                     Crashlytics.logException(e);

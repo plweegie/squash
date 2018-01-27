@@ -81,8 +81,8 @@ public class QueryPreferences {
             long bStamp = 0L;
             long aStamp = 0L;
             try {
-                aStamp = DateUtils.convertToTimestamp(a.getCommitBody().getCommitBodyAuthor().getDate());
-                bStamp = DateUtils.convertToTimestamp(b.getCommitBody().getCommitBodyAuthor().getDate());
+                aStamp = DateUtils.convertToTimestamp(a.getCommitBody().getCommitter().getDate());
+                bStamp = DateUtils.convertToTimestamp(b.getCommitBody().getCommitter().getDate());
             } catch(ParseException e) {
                 Log.e("QueryPreferences", "Date parser error: " + e);
             }

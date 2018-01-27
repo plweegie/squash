@@ -134,7 +134,7 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     }
 
     private CharSequence buildCommitDate(Commit commit) {
-        String date = commit.getCommitBody().getCommitBodyAuthor().getDate();
+        String date = commit.getCommitBody().getCommitter().getDate();
         String formattedDate = "";
 
         try {
