@@ -50,10 +50,18 @@ import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.utils.PaginationScrollListener;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -236,43 +244,50 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
 
         final String apiQuery = mQueryPrefs.getStoredQuery();
         final String authToken = mQueryPrefs.getStoredAccessToken();
-        Call<List<RepoEntry>> call = mService.getRepos(apiQuery, currentPage, authToken);
-        call.enqueue(new Callback<List<RepoEntry>>() {
+        Observable<List<RepoEntry>> call = mService.getRepos(apiQuery, currentPage, authToken);
 
-            @Override
-            public void onResponse(Call<List<RepoEntry>> call,
-                                   Response<List<RepoEntry>> response) {
+        call.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<RepoEntry>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                isLoading = false;
+                    }
 
-                if (response.body() == null) {
-                    Toast.makeText(getActivity(), "No repositories found for " + apiQuery,
-                            Toast.LENGTH_SHORT).show();
-                    mIndicator.setVisibility(View.GONE);
-                    return;
-                }
+                    @Override
+                    public void onNext(List<RepoEntry> repoEntries) {
+                        isLoading = false;
 
-                List<RepoEntry> repos = response.body();
+                        if (repoEntries == null) {
+                            Toast.makeText(getActivity(), "No repositories found for " + apiQuery,
+                                    Toast.LENGTH_SHORT).show();
+                            mIndicator.setVisibility(View.GONE);
+                            return;
+                        }
 
-                if (repos.size() > 0) {
-                    mAdapter.addAll(repos);
-                    mAdapter.sort();
-                }
+                        if (repoEntries.size() > 0) {
+                            mAdapter.addAll(repoEntries);
+                            mAdapter.sort();
+                        }
 
-                if (repos.size() < MAXIMUM_LIST_LENGTH) {
-                    isLastPage = true;
-                }
+                        if (repoEntries.size() < MAXIMUM_LIST_LENGTH) {
+                            isLastPage = true;
+                        }
+                    }
 
-                mRecyclerView.setVisibility(View.VISIBLE);
-                mIndicator.setVisibility(View.GONE);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Crashlytics.log(1, "RepoListFragment", "Retrofit error");
+                        Crashlytics.logException(e);
+                    }
 
-            @Override
-            public void onFailure(Call<List<RepoEntry>> call, Throwable t) {
-                Crashlytics.log(1, "RepoListFragment", "Retrofit error");
-                Crashlytics.logException(t);
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mIndicator.setVisibility(View.GONE);
+                    }
+                });
+
     }
 
 }

@@ -26,6 +26,7 @@ import com.plweegie.android.squash.data.RepoEntry;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -34,9 +35,9 @@ import retrofit2.http.Query;
 
 public interface GitHubService {
     @GET("users/{username}/repos")
-    Call<List<RepoEntry>> getRepos(@Path("username") String userName,
-                                   @Query("page") int page,
-                                   @Query("access_token") String accessToken);
+    Observable<List<RepoEntry>> getRepos(@Path("username") String userName,
+                        @Query("page") int page,
+                        @Query("access_token") String accessToken);
     
     @GET("repos/{owner}/{repo}/commits")
     Call<List<Commit>> getCommits(@Path("owner") String owner,
