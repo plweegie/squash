@@ -10,6 +10,8 @@
     <string name="welcome_message">Thank you for downloading Squash! You will need a GitHub account
         to use the app. If you already have one, tap the button to start</string>
 
+    <string name="loading_more">Loading more items...</string>
+
     <!-- Dialogs -->
     <string name="fave_delete">Delete favorite: are you sure?</string>
     <string name="fave_delete_yes">Yes</string>

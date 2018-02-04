@@ -143,6 +143,8 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
             protected void loadMoreItems() {
                 isLoading = true;
                 currentPage++;
+                Toast.makeText(getActivity(), getString(R.string.loading_more), Toast.LENGTH_SHORT)
+                        .show();
                 updateUI();
             }
 
