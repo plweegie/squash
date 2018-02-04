@@ -41,7 +41,6 @@ import com.plweegie.android.squash.App;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.adapters.FaveAdapter;
 import com.plweegie.android.squash.data.Commit;
-import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.data.RepoRepository;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.utils.DateUtils;
@@ -62,9 +61,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapterOnClickHandler {
 

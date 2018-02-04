@@ -44,7 +44,6 @@ import com.plweegie.android.squash.ui.LastCommitDetailsActivity;
 import com.plweegie.android.squash.utils.DateUtils;
 import com.plweegie.android.squash.utils.QueryPreferences;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +54,6 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import retrofit2.Call;
 
 public class CommitPollService extends JobService {
     private static final String TAG = "CommitPollService";
