@@ -40,7 +40,7 @@ public interface GitHubService {
                         @Query("access_token") String accessToken);
     
     @GET("repos/{owner}/{repo}/commits")
-    Call<List<Commit>> getCommits(@Path("owner") String owner,
+    Observable<List<Commit>> getCommits(@Path("owner") String owner,
                                   @Path("repo") String repo, @Query("per_page") int perPage,
                                   @Query("access_token") String accessToken);
 }

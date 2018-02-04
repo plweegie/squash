@@ -52,6 +52,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import retrofit2.Call;
 
 public class CommitPollService extends JobService {
@@ -120,19 +123,31 @@ public class CommitPollService extends JobService {
 
             String authToken = mQueryPrefs.getStoredAccessToken();
 
-            for (RepoEntry entry: repos) {
-                Call<List<Commit>> call = mService.getCommits(entry.getOwner().getLogin(),
-                        entry.getName(), 1, authToken);
-                try {
-                    Commit commit = call.execute().body().get(0);
-                    mCommits.add(commit);
-                } catch(IOException e) {
-                    Crashlytics.log("Error checking for new commits");
-                    Crashlytics.logException(e);
-                    jobFinished(jobParams, true);
-                }
-            }
-            jobFinished(jobParams, false);
+            Observable.fromIterable(repos)
+                    .flatMap(repoEntry -> mService.getCommits(repoEntry.getOwner().getLogin(),
+                            repoEntry.getName(), 1, authToken))
+                    .subscribe(new Observer<List<Commit>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {}
+
+                        @Override
+                        public void onNext(List<Commit> commits) {
+                            Commit commit = commits.get(0);
+                            mCommits.add(commit);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Crashlytics.log("Error checking for new commits");
+                            Crashlytics.logException(e);
+                            jobFinished(jobParams, true);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            jobFinished(jobParams, false);
+                        }
+                    });
             return null;
         }
 

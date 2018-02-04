@@ -57,6 +57,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -119,26 +124,30 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
 
         mViewModel.getFaveList().observe(this, repoEntries -> {
             mAdapter.setContent(repoEntries);
-            for(int i = 0; i < mAdapter.getItemCount(); i++) {
-                RepoEntry repo = mAdapter.getItem(i);
 
-                Call<List<Commit>> call = mService.getCommits(repo.getOwner().getLogin(),
-                        repo.getName(), 1, mAuthToken);
+            Observable.fromIterable(repoEntries)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap(repo -> mService.getCommits(repo.getOwner().getLogin(),
+                            repo.getName(), 1, mAuthToken))
+                    .subscribe(new Observer<List<Commit>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {}
 
-                call.enqueue(new Callback<List<Commit>>() {
-                    @Override
-                    public void onResponse(Call<List<Commit>> call, Response<List<Commit>> response) {
-                        Commit commit = response.body().get(0);
-                        repoLastCommits.add(commit);
-                    }
+                        @Override
+                        public void onNext(List<Commit> commits) {
+                            repoLastCommits.add(commits.get(0));
+                        }
 
-                    @Override
-                    public void onFailure(Call<List<Commit>> call, Throwable t) {
-                        Crashlytics.log("Retrofit error");
-                        Crashlytics.logException(t);
-                    }
-                });
-            }
+                        @Override
+                        public void onError(Throwable e) {
+                            Crashlytics.log("Retrofit error");
+                            Crashlytics.logException(e);
+                        }
+
+                        @Override
+                        public void onComplete() {}
+                    });
 
             if (!repoLastCommits.isEmpty()) {
                 Collections.sort(repoLastCommits, new QueryPreferences.CommitCreatedComparator());

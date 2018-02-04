@@ -43,6 +43,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,25 +102,33 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
 
     private void updateUI() {
         String authToken = mQueryPrefs.getStoredAccessToken();
-        Call<List<Commit>> call = mService.getCommits(mRepoProps[0], mRepoProps[1], 1,
+        Observable<List<Commit>> call = mService.getCommits(mRepoProps[0], mRepoProps[1], 1,
                 authToken);
 
-        call.enqueue(new Callback<List<Commit>>() {
-            @Override
-            public void onResponse(Call<List<Commit>> call, Response<List<Commit>> response) {
-                Commit commit = response.body().get(0);
-                mMessageTextView.setText(commit.getCommitBody().getMessage()
-                        .split("\n")[0]);
-                mInfoTextView.setText(buildCommitInfo(commit));
-                mDateTextView.setText(buildCommitDate(commit));
-            }
+        call.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Commit>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {}
 
-            @Override
-            public void onFailure(Call<List<Commit>> call, Throwable t) {
-                Crashlytics.log(1, "LastCommitDetails", "Retrofit error");
-                Crashlytics.logException(t);
-            }
-        });
+                    @Override
+                    public void onNext(List<Commit> commits) {
+                        Commit commit = commits.get(0);
+                        mMessageTextView.setText(commit.getCommitBody().getMessage()
+                                .split("\n")[0]);
+                        mInfoTextView.setText(buildCommitInfo(commit));
+                        mDateTextView.setText(buildCommitDate(commit));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Crashlytics.log(1, "LastCommitDetails", "Retrofit error");
+                        Crashlytics.logException(e);
+                    }
+
+                    @Override
+                    public void onComplete() {}
+                });
     }
 
     private CharSequence buildCommitInfo(Commit commit) {
