@@ -44,9 +44,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class LastCommitDetailsActivity extends AppCompatActivity {
@@ -64,6 +64,8 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     private TextView mMessageTextView;
     private TextView mInfoTextView;
     private TextView mDateTextView;
+
+    private Disposable mDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,14 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putCharSequenceArray(TEXT_VIEW_CONTENTS, new CharSequence[]{
@@ -102,12 +112,9 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
         Observable<List<Commit>> call = mService.getCommits(mRepoProps[0], mRepoProps[1], 1,
                 authToken);
 
-        call.subscribeOn(Schedulers.io())
+        mDisposable = call.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Commit>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {}
-
+                .subscribeWith(new DisposableObserver<List<Commit>>() {
                     @Override
                     public void onNext(List<Commit> commits) {
                         Commit commit = commits.get(0);

@@ -52,8 +52,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 
 public class CommitPollService extends JobService {
     private static final String TAG = "CommitPollService";
@@ -73,6 +73,7 @@ public class CommitPollService extends JobService {
     @Inject
     RepoRepository mDataRepository;
 
+    private Disposable mDisposable;
     private CommitPollTask mTask;
 
     public CommitPollService() {
@@ -95,6 +96,9 @@ public class CommitPollService extends JobService {
     public boolean onStopJob(JobParameters jobParameters) {
         if (mTask != null) {
             mTask.cancel(true);
+        }
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
         }
         return true;
     }
@@ -121,13 +125,10 @@ public class CommitPollService extends JobService {
 
             String authToken = mQueryPrefs.getStoredAccessToken();
 
-            Observable.fromIterable(repos)
+            mDisposable = Observable.fromIterable(repos)
                     .flatMap(repoEntry -> mService.getCommits(repoEntry.getOwner().getLogin(),
                             repoEntry.getName(), 1, authToken))
-                    .subscribe(new Observer<List<Commit>>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {}
-
+                    .subscribeWith(new DisposableObserver<List<Commit>>() {
                         @Override
                         public void onNext(List<Commit> commits) {
                             Commit commit = commits.get(0);

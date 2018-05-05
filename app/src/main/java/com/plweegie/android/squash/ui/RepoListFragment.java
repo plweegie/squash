@@ -55,9 +55,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -86,6 +86,8 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     private RepoAdapter mAdapter;
     private ProgressBar mIndicator;
     private InputMethodManager mImm;
+
+    private Disposable mDisposable;
 
     private SharedPreferences.OnSharedPreferenceChangeListener mListener;
 
@@ -173,6 +175,10 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     public void onDestroy() {
         super.onDestroy();
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(mListener);
+
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
     }
 
     @Override
@@ -234,6 +240,7 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
     @Override
     public void onItemClick(int position) {
         mDataRepository.addFavorite(mAdapter.getItem(position));
+        mQueryPrefs.setLastResultDate(System.currentTimeMillis());
     }
     
     private void updateUI() {
@@ -242,14 +249,9 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
         final String authToken = mQueryPrefs.getStoredAccessToken();
         Observable<List<RepoEntry>> call = mService.getRepos(apiQuery, currentPage, authToken);
 
-        call.subscribeOn(Schedulers.io())
+        mDisposable = call.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<RepoEntry>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
+                .subscribeWith(new DisposableObserver<List<RepoEntry>>() {
                     @Override
                     public void onNext(List<RepoEntry> repoEntries) {
                         isLoading = false;
@@ -283,7 +285,6 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
                         mIndicator.setVisibility(View.GONE);
                     }
                 });
-
     }
 
 }
