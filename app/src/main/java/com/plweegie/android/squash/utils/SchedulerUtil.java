@@ -26,7 +26,7 @@ public class SchedulerUtil {
             JobInfo jobInfo = new JobInfo.Builder(POLL_JOB_ID,
                     new ComponentName(context, CommitPollService.class))
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(60 * 60 * 1000)
+                    .setPeriodic(30 * 60 * 1000)
                     .setPersisted(true)
                     .build();
             scheduler.schedule(jobInfo);
