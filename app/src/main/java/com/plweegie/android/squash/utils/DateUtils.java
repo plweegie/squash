@@ -4,17 +4,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.util.TimeZone;
 
 
 public class DateUtils {
 
-    private static final DateFormat SOURCE_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    private static final DateFormat TARGET_FORMAT = new SimpleDateFormat("dd MMMM, yyyy");
-
     public static String changeDateFormats(String date) throws ParseException {
-        return TARGET_FORMAT.format(convertToDate(date));
+        DateFormat targetFormat =  new SimpleDateFormat("dd MMMM, yyyy, HH:mm");
+        return targetFormat.format(convertToDate(date));
     }
 
     public static long convertToTimestamp(String date) throws ParseException {
@@ -22,8 +19,10 @@ public class DateUtils {
     }
 
     private static Date convertToDate(String date) throws ParseException {
+        DateFormat sourceFormat =  new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sourceFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
         String dayDate = date.split("Z")[0];
-        Date commitDate = SOURCE_FORMAT.parse(dayDate);
-        return commitDate;
+        return sourceFormat.parse(dayDate);
     }
 }
