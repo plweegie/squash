@@ -100,12 +100,7 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-                mAdapter.sort();
-            }
-        };
+        mListener = (sharedPrefs, s) -> mAdapter.sort();
     }
 
     @Override
@@ -216,13 +211,10 @@ public class RepoListFragment extends Fragment implements RepoAdapter.RepoAdapte
                 return true;
             }
         });
-        
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String query = mQueryPrefs.getStoredQuery();
-                searchView.setQuery(query, false);
-            }
+
+        searchView.setOnSearchClickListener(view -> {
+            String query = mQueryPrefs.getStoredQuery();
+            searchView.setQuery(query, false);
         });
     }
 

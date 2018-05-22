@@ -94,9 +94,8 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         mAdapter = new FaveAdapter(getActivity(), FaveListFragment.this);
         mRecyclerView.setAdapter(mAdapter);
 
-        mViewModel.getFaveList().observe(this, repoEntries -> {
-            mAdapter.setContent(repoEntries);
-        });
+        mViewModel.getFaveList().observe(this, repoEntries ->
+            mAdapter.setContent(repoEntries));
 
         return v;
     }

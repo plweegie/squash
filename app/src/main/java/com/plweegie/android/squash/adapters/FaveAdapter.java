@@ -77,26 +77,20 @@ public class FaveAdapter extends BaseGithubAdapter {
             mDeleteImgView.getDrawable()
                     .setColorFilter(mContext.getResources().getColor(R.color.colorAlert),
                             PorterDuff.Mode.SRC_IN);
-            mDeleteImgView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
+            mDeleteImgView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
 
-                    FaveDeleteDialog dialog = new FaveDeleteDialog();
-                    dialog.show(((FragmentActivity) mContext).getSupportFragmentManager(),
-                            DELETE_DIALOG);
-                    dialog.setClickHandler(mClickHandler, mRepos.get(position).getRepoId());
-                }
+                FaveDeleteDialog dialog = new FaveDeleteDialog();
+                dialog.show(((FragmentActivity) mContext).getSupportFragmentManager(),
+                        DELETE_DIALOG);
+                dialog.setClickHandler(mClickHandler, mRepos.get(position).getRepoId());
             });
 
             mInfoImageView.setImageResource(R.drawable.ic_description_24dp);
-            mInfoImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = LastCommitDetailsActivity.newIntent(mContext,
-                            new String[] {repo.getOwner().getLogin(), repo.getName()});
-                    mContext.startActivity(intent);
-                }
+            mInfoImageView.setOnClickListener(view -> {
+                Intent intent = LastCommitDetailsActivity.newIntent(mContext,
+                        new String[] {repo.getOwner().getLogin(), repo.getName()});
+                mContext.startActivity(intent);
             });
         }
     }

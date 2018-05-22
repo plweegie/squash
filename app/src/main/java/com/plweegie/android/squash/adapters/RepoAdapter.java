@@ -128,14 +128,11 @@ public class RepoAdapter extends BaseGithubAdapter {
             mInvisibleImgView.setVisibility(View.GONE);
 
             mFavoriteImgView.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
-            mFavoriteImgView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext, repo.getName() + " added to Favorites",
-                            Toast.LENGTH_SHORT).show();
-                    int position = getAdapterPosition();
-                    mClickHandler.onItemClick(position);
-                }
+            mFavoriteImgView.setOnClickListener(view -> {
+                Toast.makeText(mContext, repo.getName() + " added to Favorites",
+                        Toast.LENGTH_SHORT).show();
+                int position = getAdapterPosition();
+                mClickHandler.onItemClick(position);
             });
         }
     }
