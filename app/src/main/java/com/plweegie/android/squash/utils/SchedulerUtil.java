@@ -6,14 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 
 import com.plweegie.android.squash.services.CommitPollService;
-import com.plweegie.android.squash.services.CommitPollWorker;
-
-import java.util.concurrent.TimeUnit;
-
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 public class SchedulerUtil {
 
@@ -39,22 +31,5 @@ public class SchedulerUtil {
                     .build();
             scheduler.schedule(jobInfo);
         }
-    }
-
-    public static void enqueueWorkRequest() {
-
-        Constraints workConstraints = new Constraints.Builder()
-                .setRequiresBatteryNotLow(true)
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
-
-        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
-                CommitPollWorker.class,
-                15L,
-                TimeUnit.MINUTES)
-                .setConstraints(workConstraints)
-                .build();
-
-        WorkManager.getInstance().enqueue(request);
     }
 }

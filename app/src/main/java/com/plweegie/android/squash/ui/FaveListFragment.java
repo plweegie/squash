@@ -40,7 +40,9 @@ import com.plweegie.android.squash.App;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.adapters.FaveAdapter;
 import com.plweegie.android.squash.data.RepoRepository;
-import com.plweegie.android.squash.utils.SchedulerUtil;
+import com.plweegie.android.squash.rest.GitHubService;
+import com.plweegie.android.squash.utils.QueryPreferences;
+import com.plweegie.android.squash.utils.WorkManagerUtil;
 import com.plweegie.android.squash.viewmodels.FaveListViewModel;
 import com.plweegie.android.squash.viewmodels.FaveListViewModelFactory;
 
@@ -68,7 +70,7 @@ public class FaveListFragment extends Fragment implements FaveAdapter.FaveAdapte
         FaveListViewModelFactory factory = new FaveListViewModelFactory(mDataRepository);
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(FaveListViewModel.class);
 
-        SchedulerUtil.scheduleCommitPoll(getActivity());
+        WorkManagerUtil.enqueueWorkRequest();
     }
 
     @Override

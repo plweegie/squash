@@ -7,16 +7,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 
-import com.plweegie.android.squash.services.CommitPollService;
+import com.plweegie.android.squash.services.CommitPollWorker;
 
 public abstract class VisibleActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
         super.onStart();
-        IntentFilter filter = new IntentFilter(CommitPollService.ACTION_SHOW_NOTIFICATION);
+        IntentFilter filter = new IntentFilter(CommitPollWorker.ACTION_SHOW_NOTIFICATION);
         this.registerReceiver(mOnShowNotification, filter,
-                CommitPollService.PERMISSION_PRIVATE, null);
+                CommitPollWorker.PERMISSION_PRIVATE, null);
     }
 
     @Override

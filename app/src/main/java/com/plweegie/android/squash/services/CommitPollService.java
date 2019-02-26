@@ -62,7 +62,7 @@ public class CommitPollService extends JobService {
     public static final String PERMISSION_PRIVATE =
             "com.plweegie.android.squash.PRIVATE";
     public static final String REQUEST_CODE = "request_code";
-    public static final String NOTIFICATION = "notification";
+    public static final String NOTIFICATION = "notificatiFon";
 
     @Inject
     GitHubService mService;

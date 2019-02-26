@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.plweegie.android.squash.utils.SchedulerUtil;
+import com.plweegie.android.squash.utils.WorkManagerUtil;
 
 public class StartupReceiver extends BroadcastReceiver {
 
@@ -12,7 +12,7 @@ public class StartupReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-            SchedulerUtil.scheduleCommitPoll(context);
+            WorkManagerUtil.enqueueWorkRequest();
         }
     }
 }
