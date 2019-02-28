@@ -63,7 +63,9 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Worker(
                     service.getCommits(repoEntry.owner.login,
                             repoEntry.name, 1, authToken) }
                 .subscribe(
-                        { result -> commits.add(result[0]) },
+                        { result ->
+                            val filteredMerges = result.filter { !it.commitBody.message.startsWith("Merge pull") }
+                            commits.add(filteredMerges[0]) },
                         { err ->
                             Crashlytics.log("Error checking for new commits")
                             Crashlytics.logException(err)
@@ -110,11 +112,7 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Worker(
 
             showBackgroundNotif(0, notification)
             queryPrefs.lastResultDate = newLastDate
-
-
         }
-
-
     }
 
     private fun showBackgroundNotif(requestCode: Int, notif: Notification) {
@@ -125,7 +123,6 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Worker(
 
         context.sendOrderedBroadcast(intent, PERMISSION_PRIVATE, null, null,
                 Activity.RESULT_OK, null, null)
-
     }
 
 
