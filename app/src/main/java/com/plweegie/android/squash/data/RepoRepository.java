@@ -1,6 +1,6 @@
 package com.plweegie.android.squash.data;
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 
 import com.plweegie.android.squash.utils.AppExecutors;
 

@@ -4,8 +4,8 @@ package com.plweegie.android.squash.ui;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.adapters.FaveAdapter;

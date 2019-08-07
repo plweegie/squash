@@ -1,7 +1,7 @@
 package com.plweegie.android.squash.data;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 @Database(entities = {RepoEntry.class}, version = 2)
 public abstract class RepoDatabase extends RoomDatabase{
