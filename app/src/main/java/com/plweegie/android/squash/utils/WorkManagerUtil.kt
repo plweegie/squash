@@ -1,9 +1,7 @@
 package com.plweegie.android.squash.utils
 
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import android.content.Context
+import androidx.work.*
 import com.plweegie.android.squash.services.CommitPollWorker
 import java.util.concurrent.TimeUnit
 
@@ -15,7 +13,7 @@ class WorkManagerUtil {
         private const val GITHUB_CHECK_TAG = "github_check"
 
         @JvmStatic
-        fun enqueueWorkRequest() {
+        fun enqueueWorkRequest(context: Context) {
             val constraints = Constraints.Builder()
                     .setRequiresBatteryNotLow(true)
                     .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -26,7 +24,10 @@ class WorkManagerUtil {
                     .setConstraints(constraints)
                     .build()
 
-            WorkManager.getInstance().enqueue(request)
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                    GITHUB_CHECK_TAG,
+                    ExistingPeriodicWorkPolicy.KEEP,
+                    request)
         }
     }
 }

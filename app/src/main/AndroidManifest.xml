@@ -32,11 +32,6 @@
         <activity android:name=".ui.SettingsActivity"
             android:parentActivityName=".ui.GithubPagerActivity" />
 
-        <receiver android:name=".receivers.StartupReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".receivers.NotificationReceiver"
             android:exported="false">
             <intent-filter android:priority="-999">

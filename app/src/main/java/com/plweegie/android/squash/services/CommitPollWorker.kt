@@ -6,8 +6,7 @@ import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.work.ListenableWorker
-import androidx.work.Worker
+import androidx.work.RxWorker
 import androidx.work.WorkerParameters
 import com.crashlytics.android.Crashlytics
 import com.plweegie.android.squash.App
@@ -19,12 +18,12 @@ import com.plweegie.android.squash.ui.LastCommitDetailsActivity
 import com.plweegie.android.squash.utils.DateUtils
 import com.plweegie.android.squash.utils.QueryPreferences
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import io.reactivex.Single
 import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
 
-class CommitPollWorker(val context: Context, params: WorkerParameters) : Worker(context, params) {
+class CommitPollWorker(val context: Context, params: WorkerParameters) : RxWorker(context, params) {
 
     @Inject
     lateinit var service: GitHubService
@@ -35,7 +34,6 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Worker(
     @Inject
     lateinit var dataRepository: RepoRepository
 
-    private var disposable: Disposable? = null
     private val commits: MutableList<Commit>
 
     companion object {
@@ -52,28 +50,28 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Worker(
         createNotificationChannel()
     }
 
-    override fun doWork(): ListenableWorker.Result {
+    override fun createWork(): Single<Result> {
         val repos = dataRepository.allFavoritesDirectly
 
         val authToken = queryPrefs.storedAccessToken
-        var status = ListenableWorker.Result.retry()
 
-        disposable = Observable.fromIterable(repos)
+        return Observable.fromIterable(repos)
                 .flatMap { repoEntry ->
                     service.getCommits(repoEntry.owner.login,
-                            repoEntry.name, 1, authToken) }
-                .subscribe(
-                        { result ->
-                            val filteredMerges = result.filter { !it.commitBody.message.startsWith("Merge pull") }
-                            commits.add(filteredMerges[0]) },
-                        { err ->
-                            Crashlytics.log("Error checking for new commits")
-                            Crashlytics.logException(err)
-                            status = ListenableWorker.Result.failure() },
-                        { status = ListenableWorker.Result.success()
-                          processCommits(commits) }
-                )
-        return status
+                            repoEntry.name, 1, authToken)
+                }
+                .toList()
+                .map { result ->
+                    result.forEach { list ->
+                        val filteredMerges = list.filter { !it.commitBody.message.startsWith("Merge pull") }
+                        commits.add(filteredMerges[0])
+                    }
+                    processCommits(commits)
+                    Result.success()
+                }
+                .onErrorReturn {
+                    Result.failure()
+                }
     }
 
     private fun processCommits(commits: List<Commit>) {
@@ -138,12 +136,6 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Worker(
 
             val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    override fun onStopped() {
-        if (disposable?.isDisposed == false) {
-            disposable?.dispose()
         }
     }
 }

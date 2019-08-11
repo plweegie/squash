@@ -31,6 +31,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.adapters.GithubPagerAdapter;
 import com.plweegie.android.squash.utils.AuthUtils;
+import com.plweegie.android.squash.utils.WorkManagerUtil;
 
 public class GithubPagerActivity  extends VisibleActivity {
     
@@ -61,5 +62,7 @@ public class GithubPagerActivity  extends VisibleActivity {
         mViewPager.setOffscreenPageLimit(2);
         
         mTabLayout.setupWithViewPager(mViewPager);
+
+        WorkManagerUtil.enqueueWorkRequest(this);
     }
 }
