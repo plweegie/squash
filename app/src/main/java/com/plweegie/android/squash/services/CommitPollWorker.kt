@@ -17,7 +17,6 @@ import com.plweegie.android.squash.rest.GitHubService
 import com.plweegie.android.squash.ui.LastCommitDetailsActivity
 import com.plweegie.android.squash.utils.DateUtils
 import com.plweegie.android.squash.utils.QueryPreferences
-import io.reactivex.Observable
 import io.reactivex.Single
 import java.text.ParseException
 import java.util.*
@@ -55,7 +54,8 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : RxWorke
 
         val authToken = queryPrefs.storedAccessToken
 
-        return Observable.fromIterable(repos)
+        return repos.toObservable()
+                .flatMapIterable { it }
                 .flatMap { repoEntry ->
                     service.getCommits(repoEntry.owner.login,
                             repoEntry.name, 1, authToken)

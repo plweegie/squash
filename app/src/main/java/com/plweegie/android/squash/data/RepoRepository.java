@@ -9,6 +9,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Maybe;
+
 @Singleton
 public class RepoRepository {
     private final RepoDao mRepoDao;
@@ -24,7 +26,7 @@ public class RepoRepository {
         return mRepoDao.getFavorites();
     }
 
-    public List<RepoEntry> getAllFavoritesDirectly() {
+    public Maybe<List<RepoEntry>> getAllFavoritesDirectly() {
         return mRepoDao.getFavoritesDirectly();
     }
 

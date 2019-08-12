@@ -8,6 +8,8 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Maybe;
+
 @Dao
 public interface RepoDao {
 
@@ -15,7 +17,7 @@ public interface RepoDao {
     LiveData<List<RepoEntry>> getFavorites();
 
     @Query("SELECT * FROM repos")
-    List<RepoEntry> getFavoritesDirectly();
+    Maybe<List<RepoEntry>> getFavoritesDirectly();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertFavorite(RepoEntry repo);

@@ -26,7 +26,7 @@ class WorkManagerUtil {
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                     GITHUB_CHECK_TAG,
-                    ExistingPeriodicWorkPolicy.KEEP,
+                    ExistingPeriodicWorkPolicy.REPLACE,
                     request)
         }
     }
