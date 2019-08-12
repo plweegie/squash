@@ -52,33 +52,15 @@
         android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="2">
-            
-        <ImageView
-            android:id="@+id/watchers_iv"
-            android:scaleType="centerCrop"
-            android:layout_height="24dp"
-            android:layout_width="24dp"
-            android:layout_marginLeft="4dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:src="@drawable/ic_visibility_black_24dp"
-            android:tint="@color/colorPrimary"
-            android:tintMode="src_in" />
-        
-        <TextView
-            android:id="@+id/watchers_tv"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_toLeftOf="@+id/watchers_iv" />
-            
+
         <ImageView
             android:id="@+id/stars_iv"
             android:scaleType="centerCrop"
             android:layout_height="24dp"
             android:layout_width="24dp"
             android:layout_marginLeft="4dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/watchers_iv"
             android:src="@drawable/ic_star_rate_black_18dp"
             android:tint="@color/colorPrimary"
             android:tintMode="src_in" />
@@ -87,8 +69,8 @@
             android:id="@+id/stars_tv"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginTop="4dp"
-            android:layout_below="@+id/watchers_tv"
             android:layout_toLeftOf="@+id/stars_iv" />
             
     </RelativeLayout>

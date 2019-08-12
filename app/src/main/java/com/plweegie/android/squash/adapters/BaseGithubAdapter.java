@@ -60,7 +60,6 @@ public class BaseGithubAdapter extends
         protected TextView mNameTextView;
         protected TextView mLangTextView;
         protected TextView mStarCountTextView;
-        protected TextView mWatchCountTextView;
 
         public BaseViewHolder(LayoutInflater inflater, ViewGroup parent,
                           int layoutResId) {
@@ -69,7 +68,6 @@ public class BaseGithubAdapter extends
             mNameTextView = itemView.findViewById(R.id.repo_name_tv);
             mLangTextView = itemView.findViewById(R.id.repo_language_tv);
             mStarCountTextView = itemView.findViewById(R.id.stars_tv);
-            mWatchCountTextView = itemView.findViewById(R.id.watchers_tv);
         }
 
         public void bind(RepoEntry repo) {
@@ -77,7 +75,6 @@ public class BaseGithubAdapter extends
             mNameTextView.setText(repo.getName());
             mLangTextView.setText(repo.getLanguage());
             mStarCountTextView.setText(Integer.toString(repo.getStargazersCount()));
-            mWatchCountTextView.setText(Integer.toString(repo.getWatchersCount()));
         }
     }
 }
