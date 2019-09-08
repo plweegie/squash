@@ -19,27 +19,26 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-package com.plweegie.android.squash.rest;
+package com.plweegie.android.squash.rest
 
-import com.plweegie.android.squash.data.Commit;
-import com.plweegie.android.squash.data.RepoEntry;
+import com.plweegie.android.squash.data.Commit
+import com.plweegie.android.squash.data.RepoEntry
 
-import java.util.List;
-
-import io.reactivex.Observable;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import io.reactivex.Observable
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
-public interface GitHubService {
+interface GitHubService {
     @GET("users/{username}/repos")
-    Observable<List<RepoEntry>> getRepos(@Path("username") String userName,
-                        @Query("page") int page,
-                        @Query("access_token") String accessToken);
-    
+    fun getRepos(@Path("username") userName: String,
+                 @Query("page") page: Int,
+                 @Query("access_token") accessToken: String): Observable<List<RepoEntry>>
+
     @GET("repos/{owner}/{repo}/commits")
-    Observable<List<Commit>> getCommits(@Path("owner") String owner,
-                                  @Path("repo") String repo, @Query("per_page") int perPage,
-                                  @Query("access_token") String accessToken);
+    fun getCommits(@Path("owner") owner: String,
+                   @Path("repo") repo: String,
+                   @Query("per_page") perPage: Int,
+                   @Query("access_token") accessToken: String): Observable<List<Commit>>
 }
