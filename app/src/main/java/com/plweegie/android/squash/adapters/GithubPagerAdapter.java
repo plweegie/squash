@@ -22,6 +22,7 @@
 package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;

@@ -18,11 +18,11 @@ interface RepoDao {
     val favoritesDirectly: Maybe<List<RepoEntry>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFavorite(repo: RepoEntry)
+    suspend fun insertFavorite(repo: RepoEntry)
 
     @Query("DELETE FROM repos WHERE repoId = :repoId")
-    fun deleteSelected(repoId: Long)
+    suspend fun deleteSelected(repoId: Long)
 
     @Query("DELETE FROM repos")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

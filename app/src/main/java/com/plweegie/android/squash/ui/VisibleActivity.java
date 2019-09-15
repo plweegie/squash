@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.plweegie.android.squash.services.CommitPollWorker;

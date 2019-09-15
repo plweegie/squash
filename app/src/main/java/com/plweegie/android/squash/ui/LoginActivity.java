@@ -3,9 +3,10 @@ package com.plweegie.android.squash.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.auth.GithubOauth;

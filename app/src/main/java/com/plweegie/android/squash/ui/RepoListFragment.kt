@@ -44,6 +44,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.list_fragment.*
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -190,7 +191,9 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler {
         }
 
     override fun onItemClick(position: Int) {
-        dataRepository.addFavorite(repoAdapter.getItem(position))
+        runBlocking {
+            dataRepository.addFavorite(repoAdapter.getItem(position))
+        }
         queryPrefs.lastResultDate = System.currentTimeMillis()
     }
 

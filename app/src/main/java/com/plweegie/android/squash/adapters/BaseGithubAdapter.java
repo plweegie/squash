@@ -1,10 +1,11 @@
 package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;

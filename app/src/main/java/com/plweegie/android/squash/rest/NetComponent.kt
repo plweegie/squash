@@ -7,10 +7,8 @@ import com.plweegie.android.squash.services.CommitPollWorker
 import com.plweegie.android.squash.ui.FaveListFragment
 import com.plweegie.android.squash.ui.LastCommitDetailsActivity
 import com.plweegie.android.squash.ui.RepoListFragment
-
-import javax.inject.Singleton
-
 import dagger.Component
+import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [AppModule::class, NetModule::class, SharedPrefModule::class, RoomModule::class])

@@ -24,10 +24,11 @@ package com.plweegie.android.squash.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;

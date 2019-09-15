@@ -18,15 +18,15 @@ class RepoRepository @Inject constructor(database: RepoDatabase,
     val allFavoritesDirectly: Maybe<List<RepoEntry>>
         get() = repoDao.favoritesDirectly
 
-    fun addFavorite(repo: RepoEntry) {
-       executor.execute { repoDao.insertFavorite(repo) }
+    suspend fun addFavorite(repo: RepoEntry) {
+       repoDao.insertFavorite(repo)
     }
 
-    fun deleteRepo(repoId: Long) {
-        executor.execute { repoDao.deleteSelected(repoId) }
+    suspend fun deleteRepo(repoId: Long) {
+       repoDao.deleteSelected(repoId)
     }
 
-    fun deleteAllRepos() {
-        executor.execute { repoDao.deleteAll() }
+    suspend fun deleteAllRepos() {
+        repoDao.deleteAll()
     }
 }

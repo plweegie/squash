@@ -2,6 +2,7 @@ package com.plweegie.android.squash.ui;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
 import androidx.annotation.Nullable;
 
 import com.plweegie.android.squash.R;
