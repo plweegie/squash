@@ -32,13 +32,24 @@ import retrofit2.http.Query
 
 interface GitHubService {
     @GET("users/{username}/repos")
-    fun getRepos(@Path("username") userName: String,
+    suspend fun getRepos(@Path("username") userName: String,
                  @Query("page") page: Int,
-                 @Query("access_token") accessToken: String): Observable<List<RepoEntry>>
+                 @Query("access_token") accessToken: String): List<RepoEntry>
 
     @GET("repos/{owner}/{repo}/commits")
-    fun getCommits(@Path("owner") owner: String,
+    suspend fun getCommits(@Path("owner") owner: String,
                    @Path("repo") repo: String,
                    @Query("per_page") perPage: Int,
-                   @Query("access_token") accessToken: String): Observable<List<Commit>>
+                   @Query("access_token") accessToken: String): List<Commit>
+
+    @GET("users/{username}/repos")
+    fun getReposObservable(@Path("username") userName: String,
+                         @Query("page") page: Int,
+                         @Query("access_token") accessToken: String): Observable<List<RepoEntry>>
+
+    @GET("repos/{owner}/{repo}/commits")
+    fun getCommitsObservable(@Path("owner") owner: String,
+                           @Path("repo") repo: String,
+                           @Query("per_page") perPage: Int,
+                           @Query("access_token") accessToken: String): Observable<List<Commit>>
 }

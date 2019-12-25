@@ -15,7 +15,6 @@ class WorkManagerUtil {
         @JvmStatic
         fun enqueueWorkRequest(context: Context) {
             val constraints = Constraints.Builder()
-                    .setRequiresBatteryNotLow(true)
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
 
@@ -26,7 +25,7 @@ class WorkManagerUtil {
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                     GITHUB_CHECK_TAG,
-                    ExistingPeriodicWorkPolicy.KEEP,
+                    ExistingPeriodicWorkPolicy.REPLACE,
                     request)
         }
     }

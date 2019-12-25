@@ -6,7 +6,7 @@ import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.work.RxWorker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.crashlytics.android.Crashlytics
 import com.plweegie.android.squash.App
@@ -17,12 +17,11 @@ import com.plweegie.android.squash.rest.GitHubService
 import com.plweegie.android.squash.ui.LastCommitDetailsActivity
 import com.plweegie.android.squash.utils.DateUtils
 import com.plweegie.android.squash.utils.QueryPreferences
-import io.reactivex.Single
 import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
 
-class CommitPollWorker(val context: Context, params: WorkerParameters) : RxWorker(context, params) {
+class CommitPollWorker(val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     @Inject
     lateinit var service: GitHubService
@@ -49,29 +48,21 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : RxWorke
         createNotificationChannel()
     }
 
-    override fun createWork(): Single<Result> {
-        val repos = dataRepository.allFavoritesDirectly
-
+    override suspend fun doWork(): Result {
+        val repos = dataRepository.getFavoritesAsync()
         val authToken = queryPrefs.storedAccessToken
 
-        return repos.toObservable()
-                .flatMapIterable { it }
-                .flatMap { repoEntry ->
-                    service.getCommits(repoEntry.owner.login,
-                            repoEntry.name, 1, authToken)
-                }
-                .toList()
-                .map { result ->
-                    result.forEach { list ->
-                        val filteredMerges = list.filter { !it.commitBody.message.startsWith("Merge pull") }
-                        commits.add(filteredMerges[0])
-                    }
-                    processCommits(commits)
-                    Result.success()
-                }
-                .onErrorReturn {
-                    Result.failure()
-                }
+        return try {
+            repos.forEach { repo ->
+                val filteredMerges = service.getCommits(repo.owner.login, repo.name, 1, authToken)
+                        .filter { !it.commitBody.message.startsWith("Merge pull") }
+                commits.add(filteredMerges[0])
+            }
+            processCommits(commits)
+            Result.success()
+        } catch (e: Exception) {
+            Result.failure()
+        }
     }
 
     private fun processCommits(commits: List<Commit>) {

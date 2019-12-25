@@ -6,16 +6,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
-import io.reactivex.Maybe
-
 @Dao
 interface RepoDao {
 
     @get:Query("SELECT * FROM repos")
     val favorites: LiveData<List<RepoEntry>>
 
-    @get:Query("SELECT * FROM repos")
-    val favoritesDirectly: Maybe<List<RepoEntry>>
+    @Query("SELECT * FROM repos")
+    suspend fun getFavoritesAsync(): List<RepoEntry>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavorite(repo: RepoEntry)

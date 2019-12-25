@@ -201,7 +201,7 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler {
 
         val apiQuery = queryPrefs.storedQuery ?: ""
         val authToken = queryPrefs.storedAccessToken ?: ""
-        val call = service.getRepos(apiQuery, currentPage, authToken)
+        val call = service.getReposObservable(apiQuery, currentPage, authToken)
 
         mainDisposable = call.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

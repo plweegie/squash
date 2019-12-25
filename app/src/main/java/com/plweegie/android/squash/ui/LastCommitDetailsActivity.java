@@ -110,7 +110,7 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
 
     private void updateUI() {
         String authToken = mQueryPrefs.getStoredAccessToken();
-        Observable<List<Commit>> call = mService.getCommits(mRepoProps[0], mRepoProps[1], 1,
+        Observable<List<Commit>> call = mService.getCommitsObservable(mRepoProps[0], mRepoProps[1], 1,
                 authToken);
 
         mDisposable = call.subscribeOn(Schedulers.io())
