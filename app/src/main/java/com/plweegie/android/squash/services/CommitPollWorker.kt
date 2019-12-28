@@ -50,11 +50,10 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Corouti
 
     override suspend fun doWork(): Result {
         val repos = dataRepository.getFavoritesAsync()
-        val authToken = queryPrefs.storedAccessToken
 
         return try {
             repos.forEach { repo ->
-                val filteredMerges = service.getCommits(repo.owner.login, repo.name, 1, authToken)
+                val filteredMerges = service.getCommits(repo.owner.login, repo.name, 1)
                         .filter { !it.commitBody.message.startsWith("Merge pull") }
                 commits.add(filteredMerges[0])
             }

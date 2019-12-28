@@ -2,6 +2,7 @@ package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -16,8 +17,13 @@ import java.util.List;
 public class BaseGithubAdapter extends
         RecyclerView.Adapter<BaseGithubAdapter.BaseViewHolder> {
 
+    public interface GithubAdapterOnClickListener {
+        void onItemClick(int position);
+    }
+
     protected List<RepoEntry> mRepos;
     protected Context mContext;
+    private GithubAdapterOnClickListener mListener;
 
     public BaseGithubAdapter(Context context) {
         mContext = context;
@@ -56,6 +62,10 @@ public class BaseGithubAdapter extends
         notifyDataSetChanged();
     }
 
+    public void setListener(GithubAdapterOnClickListener listener) {
+        mListener = listener;
+    }
+
     public class BaseViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView mNameTextView;
@@ -76,6 +86,13 @@ public class BaseGithubAdapter extends
             mNameTextView.setText(repo.getName());
             mLangTextView.setText(repo.getLanguage());
             mStarCountTextView.setText(Integer.toString(repo.getStargazersCount()));
+
+            mNameTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.onItemClick(getAdapterPosition());
+                }
+            });
         }
     }
 }

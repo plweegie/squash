@@ -33,7 +33,7 @@ public class QueryPreferences {
     }
 
     public String getStoredAccessToken() {
-        return mPrefs.getString(AuthUtils.PREFERENCE_NAME, null);
+        return mPrefs.getString(AuthUtils.PREFERENCE_NAME, "");
     }
 
     public long getLastResultDate() {

@@ -200,15 +200,14 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler {
     private fun updateUI() {
 
         val apiQuery = queryPrefs.storedQuery ?: ""
-        val authToken = queryPrefs.storedAccessToken ?: ""
-        val call = service.getReposObservable(apiQuery, currentPage, authToken)
+        val call = service.getReposObservable(apiQuery, currentPage)
 
         mainDisposable = call.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ repoEntries ->
                     isContentLoading = false
 
-                    if (repoEntries == null) {
+                    if (repoEntries.isNullOrEmpty()) {
                         Toast.makeText(activity, "No repositories found for $apiQuery",
                                 Toast.LENGTH_SHORT).show()
                         load_indicator?.visibility = View.GONE

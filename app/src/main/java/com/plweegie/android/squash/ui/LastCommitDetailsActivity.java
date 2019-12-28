@@ -37,7 +37,6 @@ import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.Commit;
 import com.plweegie.android.squash.rest.GitHubService;
 import com.plweegie.android.squash.utils.DateUtils;
-import com.plweegie.android.squash.utils.QueryPreferences;
 
 import java.text.ParseException;
 import java.util.List;
@@ -57,9 +56,6 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
 
     @Inject
     GitHubService mService;
-
-    @Inject
-    QueryPreferences mQueryPrefs;
 
     private String[] mRepoProps;
     private TextView mMessageTextView;
@@ -109,9 +105,7 @@ public class LastCommitDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        String authToken = mQueryPrefs.getStoredAccessToken();
-        Observable<List<Commit>> call = mService.getCommitsObservable(mRepoProps[0], mRepoProps[1], 1,
-                authToken);
+        Observable<List<Commit>> call = mService.getCommitsObservable(mRepoProps[0], mRepoProps[1], 1);
 
         mDisposable = call.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
