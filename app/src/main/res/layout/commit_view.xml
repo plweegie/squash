@@ -1,43 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/heading_tv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_marginBottom="32dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="72dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/last_commit"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:textSize="24sp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/commit_message_tv" />
 
     <TextView
         android:id="@+id/commit_message_tv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:fontFamily="sans-serif-medium"
         android:textAppearance="?android:textAppearanceLarge"
-        android:textColor="@color/colorMainText" />
+        android:textColor="@color/colorMainText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/commit_info_tv"
+        tools:text="Long commit message long commit message long commit message long commit message long commit message" />
 
     <TextView
         android:id="@+id/commit_info_tv"
-        android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:textAppearance="?android:textAppearanceMedium" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="committed" />
 
     <TextView
         android:id="@+id/commit_date_tv"
-        android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:textAppearance="?android:textAppearanceMedium"/>
-    
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commit_info_tv"
+        tools:text="00 Jun 00" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
         
