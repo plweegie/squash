@@ -24,7 +24,7 @@ public class FaveDeleteDialog extends DialogFragment {
                 .setPositiveButton(R.string.fave_delete_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mClickHandler.onItemClick(mRepoId);
+                        mClickHandler.onFaveDeleteClicked(mRepoId);
                     }
                 })
                 .setNegativeButton(R.string.fave_delete_no, new DialogInterface.OnClickListener() {

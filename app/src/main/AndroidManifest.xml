@@ -31,6 +31,7 @@
             android:parentActivityName=".ui.GithubPagerActivity" />
         <activity android:name=".ui.SettingsActivity"
             android:parentActivityName=".ui.GithubPagerActivity" />
+        <activity android:name=".ui.RepoReadmeActivity" />
 
         <receiver android:name=".receivers.NotificationReceiver"
             android:exported="false">

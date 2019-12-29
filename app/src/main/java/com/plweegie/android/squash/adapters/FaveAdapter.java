@@ -22,7 +22,6 @@
 package com.plweegie.android.squash.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ import androidx.fragment.app.FragmentActivity;
 import com.plweegie.android.squash.R;
 import com.plweegie.android.squash.data.RepoEntry;
 import com.plweegie.android.squash.ui.FaveDeleteDialog;
-import com.plweegie.android.squash.ui.LastCommitDetailsActivity;
 
 
 public class FaveAdapter extends BaseGithubAdapter {
@@ -42,9 +40,8 @@ public class FaveAdapter extends BaseGithubAdapter {
 
     private FaveAdapterOnClickHandler mClickHandler;
 
-    public FaveAdapter(Context context, FaveAdapterOnClickHandler clickHandler) {
+    public FaveAdapter(Context context) {
         super(context);
-        mClickHandler = clickHandler;
     }
 
     @Override
@@ -54,8 +51,13 @@ public class FaveAdapter extends BaseGithubAdapter {
         return new FaveHolder(inflater, vg, R.layout.repo_view_holder);
     }
 
+    public void setOnFaveDeleteClickedHandler(FaveAdapterOnClickHandler handler) {
+        mClickHandler = handler;
+    }
+
     public interface FaveAdapterOnClickHandler {
-        void onItemClick(long repoId);
+        void onFaveDeleteClicked(long repoId);
+        void onLastCommitClicked(RepoEntry repo);
     }
 
     public class FaveHolder extends BaseViewHolder {
@@ -86,12 +88,10 @@ public class FaveAdapter extends BaseGithubAdapter {
                 dialog.setClickHandler(mClickHandler, mRepos.get(position).getRepoId());
             });
 
+            mInfoImageView.setOnClickListener(view ->
+                mClickHandler.onLastCommitClicked(repo)
+            );
             mInfoImageView.setImageResource(R.drawable.ic_description_24dp);
-            mInfoImageView.setOnClickListener(view -> {
-                Intent intent = LastCommitDetailsActivity.newIntent(mContext,
-                        new String[] {repo.getOwner().getLogin(), repo.getName()});
-                mContext.startActivity(intent);
-            });
         }
     }
 }

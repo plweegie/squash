@@ -45,11 +45,9 @@ public class RepoAdapter extends BaseGithubAdapter {
     private Comparator<RepoEntry> mComparator;
     private RepoAdapterOnClickHandler mClickHandler;
 
-    public RepoAdapter(Context context,
-                       RepoAdapterOnClickHandler clickHandler) {
+    public RepoAdapter(Context context) {
         super(context);
         mComparator = new QueryPreferences.RepoNameComparator();
-        mClickHandler = clickHandler;
     }
 
     @Override
@@ -106,8 +104,12 @@ public class RepoAdapter extends BaseGithubAdapter {
         notifyDataSetChanged();
     }
 
+    public void setOnAddFavoriteListener(RepoAdapterOnClickHandler handler) {
+        mClickHandler = handler;
+    }
+
     public interface RepoAdapterOnClickHandler {
-        void onItemClick(int position);
+        void onAddFavoriteClick(RepoEntry repo);
     }
 
     public class RepoHolder extends BaseViewHolder {
@@ -131,8 +133,7 @@ public class RepoAdapter extends BaseGithubAdapter {
             mFavoriteImgView.setOnClickListener(view -> {
                 Toast.makeText(mContext, repo.getName() + " added to Favorites",
                         Toast.LENGTH_SHORT).show();
-                int position = getAdapterPosition();
-                mClickHandler.onItemClick(position);
+                mClickHandler.onAddFavoriteClick(repo);
             });
         }
     }

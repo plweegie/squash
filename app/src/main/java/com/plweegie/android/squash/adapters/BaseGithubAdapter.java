@@ -18,7 +18,7 @@ public class BaseGithubAdapter extends
         RecyclerView.Adapter<BaseGithubAdapter.BaseViewHolder> {
 
     public interface GithubAdapterOnClickListener {
-        void onItemClick(int position);
+        void onItemClick(RepoEntry repo);
     }
 
     protected List<RepoEntry> mRepos;
@@ -90,7 +90,7 @@ public class BaseGithubAdapter extends
             mNameTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mListener.onItemClick(getAdapterPosition());
+                    mListener.onItemClick(repo);
                 }
             });
         }

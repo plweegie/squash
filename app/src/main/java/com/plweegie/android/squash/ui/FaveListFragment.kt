@@ -31,13 +31,16 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.plweegie.android.squash.App
 import com.plweegie.android.squash.R
+import com.plweegie.android.squash.adapters.BaseGithubAdapter
 import com.plweegie.android.squash.adapters.FaveAdapter
+import com.plweegie.android.squash.data.RepoEntry
 import com.plweegie.android.squash.viewmodels.FaveListViewModel
 import com.plweegie.android.squash.viewmodels.FaveListViewModelFactory
 import kotlinx.android.synthetic.main.list_fragment.*
 import javax.inject.Inject
 
-class FaveListFragment : Fragment(), FaveAdapter.FaveAdapterOnClickHandler {
+class FaveListFragment : Fragment(), FaveAdapter.FaveAdapterOnClickHandler,
+        BaseGithubAdapter.GithubAdapterOnClickListener {
 
     @Inject
     lateinit var viewModelFactory: FaveListViewModelFactory
@@ -61,7 +64,10 @@ class FaveListFragment : Fragment(), FaveAdapter.FaveAdapterOnClickHandler {
                               savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.list_fragment, parent, false)
 
-        faveAdapter = FaveAdapter(activity, this)
+        faveAdapter = FaveAdapter(activity).apply {
+            setOnFaveDeleteClickedHandler(this@FaveListFragment)
+            setListener(this@FaveListFragment)
+        }
 
         return v
     }
@@ -83,8 +89,19 @@ class FaveListFragment : Fragment(), FaveAdapter.FaveAdapterOnClickHandler {
         })
     }
 
-    override fun onItemClick(repoId: Long) {
+    override fun onFaveDeleteClicked(repoId: Long) {
         viewModel.deleteRepo(repoId)
+    }
+
+    override fun onLastCommitClicked(repo: RepoEntry) {
+        val intent = LastCommitDetailsActivity.newIntent(activity,
+                arrayOf(repo.owner.login, repo.name))
+        startActivity(intent)
+    }
+
+    override fun onItemClick(repo: RepoEntry) {
+        val intent = RepoReadmeActivity.newIntent(activity as Context, repo.owner.login, repo.name)
+        startActivity(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

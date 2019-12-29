@@ -35,7 +35,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.crashlytics.android.Crashlytics
 import com.plweegie.android.squash.App
 import com.plweegie.android.squash.R
+import com.plweegie.android.squash.adapters.BaseGithubAdapter
 import com.plweegie.android.squash.adapters.RepoAdapter
+import com.plweegie.android.squash.data.RepoEntry
 import com.plweegie.android.squash.data.RepoRepository
 import com.plweegie.android.squash.rest.GitHubService
 import com.plweegie.android.squash.utils.PaginationScrollListener
@@ -48,7 +50,8 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
-class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler {
+class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
+        BaseGithubAdapter.GithubAdapterOnClickListener {
 
     @Inject
     lateinit var service: GitHubService
@@ -93,7 +96,10 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler {
         imm = activity?.getSystemService(Context
                 .INPUT_METHOD_SERVICE) as InputMethodManager
 
-        repoAdapter = RepoAdapter(activity, this)
+        repoAdapter = RepoAdapter(activity).apply {
+            setOnAddFavoriteListener(this@RepoListFragment)
+            setListener(this@RepoListFragment)
+        }
         manager = LinearLayoutManager(activity)
 
         updateUI()
@@ -190,11 +196,16 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler {
             else -> super.onOptionsItemSelected(item)
         }
 
-    override fun onItemClick(position: Int) {
+    override fun onAddFavoriteClick(repo: RepoEntry) {
         runBlocking {
-            dataRepository.addFavorite(repoAdapter.getItem(position))
+            dataRepository.addFavorite(repo)
         }
         queryPrefs.lastResultDate = System.currentTimeMillis()
+    }
+
+    override fun onItemClick(repo: RepoEntry) {
+        val intent = RepoReadmeActivity.newIntent(activity as Context, repo.owner.login, repo.name)
+        startActivity(intent)
     }
 
     private fun updateUI() {
