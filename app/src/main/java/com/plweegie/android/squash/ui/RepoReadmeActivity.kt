@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.plweegie.android.squash.App
 import com.plweegie.android.squash.R
 import com.plweegie.android.squash.rest.GitHubService
+import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.activity_repo_readme.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,6 +34,7 @@ class RepoReadmeActivity : AppCompatActivity() {
     @Inject
     lateinit var apiService: GitHubService
 
+    private lateinit var markwon: Markwon
     private var readmeOwner: String? = null
     private var readmeName: String? = null
 
@@ -40,6 +42,7 @@ class RepoReadmeActivity : AppCompatActivity() {
         (application as App).netComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repo_readme)
+        markwon = Markwon.create(this)
 
         readmeOwner = intent.getStringExtra(README_OWNER_EXTRA)
         readmeName = intent.getStringExtra(README_NAME_EXTRA)
@@ -52,7 +55,7 @@ class RepoReadmeActivity : AppCompatActivity() {
                 val readme = apiService.getReadme(it, readmeName!!)
                 val data = Base64.decode(readme.content, Base64.DEFAULT)
                 withContext(Dispatchers.Main) {
-                    readme_content_tv?.text = String(data, Charsets.UTF_8)
+                    markwon.setMarkdown(readme_content_tv, String(data, Charsets.UTF_8))
                 }
             }
         }
