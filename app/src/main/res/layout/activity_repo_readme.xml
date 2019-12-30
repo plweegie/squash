@@ -5,17 +5,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-    <TextView
-        android:id="@+id/readme_content_tv"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="64dp"
-        android:textAppearance="?android:textAppearanceMedium"
-        tools:text="Text String(data, Charsets.UTF_8) String(data, Charsets.UTF_8) String(data, Charsets.UTF_8)"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/readme_content_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceMedium"
+            tools:text="Text String(data, Charsets.UTF_8) String(data, Charsets.UTF_8) String(data, Charsets.UTF_8)" />
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
