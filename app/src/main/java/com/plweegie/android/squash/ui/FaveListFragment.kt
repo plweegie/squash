@@ -26,7 +26,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.plweegie.android.squash.App
@@ -52,7 +52,7 @@ class FaveListFragment : Fragment(), FaveAdapter.FaveAdapterOnClickHandler,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(FaveListViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(FaveListViewModel::class.java)
     }
 
     override fun onAttach(context: Context) {

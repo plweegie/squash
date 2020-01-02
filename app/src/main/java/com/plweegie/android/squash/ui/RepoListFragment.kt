@@ -30,6 +30,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crashlytics.android.Crashlytics
@@ -38,15 +40,12 @@ import com.plweegie.android.squash.R
 import com.plweegie.android.squash.adapters.BaseGithubAdapter
 import com.plweegie.android.squash.adapters.RepoAdapter
 import com.plweegie.android.squash.data.RepoEntry
-import com.plweegie.android.squash.data.RepoRepository
 import com.plweegie.android.squash.rest.GitHubService
 import com.plweegie.android.squash.utils.PaginationScrollListener
 import com.plweegie.android.squash.utils.QueryPreferences
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import com.plweegie.android.squash.viewmodels.RepoListViewModel
+import com.plweegie.android.squash.viewmodels.RepoListViewModelFactory
 import kotlinx.android.synthetic.main.list_fragment.*
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -63,8 +62,9 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
     lateinit var queryPrefs: QueryPreferences
 
     @Inject
-    lateinit var dataRepository: RepoRepository
+    lateinit var viewModelFactory: RepoListViewModelFactory
 
+    private lateinit var viewModel: RepoListViewModel
     private lateinit var repoAdapter: RepoAdapter
     private lateinit var manager: LinearLayoutManager
     private lateinit var imm: InputMethodManager
@@ -73,7 +73,7 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
     private var isContentLastPage = false
     private var currentPage = START_PAGE
 
-    private var mainDisposable: Disposable? = null
+    private var apiQuery: String? = null
 
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener {
         _, _ -> repoAdapter.sort()
@@ -82,6 +82,8 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        viewModel = ViewModelProvider(this, viewModelFactory).get(RepoListViewModel::class.java)
     }
 
     override fun onAttach(context: Context) {
@@ -102,7 +104,8 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
         }
         manager = LinearLayoutManager(activity)
 
-        updateUI()
+        apiQuery = queryPrefs.storedQuery ?: ""
+        fetchRepos(apiQuery!!, currentPage)
 
         return v
     }
@@ -121,7 +124,7 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
                     currentPage++
                     Toast.makeText(activity, getString(R.string.loading_more), Toast.LENGTH_SHORT)
                             .show()
-                    updateUI()
+                    fetchRepos(apiQuery!!, currentPage)
                 }
 
                 override fun getTotalPageCount(): Int = MAXIMUM_LIST_LENGTH
@@ -131,6 +134,8 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
                 override fun isLoading(): Boolean = isContentLoading
             })
         }
+
+        observeUI()
     }
 
     override fun onResume() {
@@ -141,10 +146,6 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
     override fun onDestroy() {
         super.onDestroy()
         sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
-
-        if (mainDisposable?.isDisposed == false) {
-            mainDisposable?.dispose()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -167,12 +168,14 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
                 load_indicator?.visibility = View.VISIBLE
 
                 queryPrefs.storedQuery = string
+                apiQuery = queryPrefs.storedQuery
+
                 isContentLoading = false
                 isContentLastPage = false
                 currentPage = START_PAGE
 
                 repoAdapter.clear()
-                updateUI()
+                fetchRepos(apiQuery!!, currentPage)
 
                 return true
             }
@@ -197,9 +200,7 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
         }
 
     override fun onAddFavoriteClick(repo: RepoEntry) {
-        runBlocking {
-            dataRepository.addFavorite(repo)
-        }
+        viewModel.addFavorite(repo)
         queryPrefs.lastResultDate = System.currentTimeMillis()
     }
 
@@ -208,40 +209,53 @@ class RepoListFragment : Fragment(), RepoAdapter.RepoAdapterOnClickHandler,
         startActivity(intent)
     }
 
-    private fun updateUI() {
+    private fun fetchRepos(query: String, page: Int) {
+        viewModel.fetchData(query, page)
+    }
 
-        val apiQuery = queryPrefs.storedQuery ?: ""
-        val call = service.getReposObservable(apiQuery, currentPage)
+    private fun observeUI() {
+        viewModel.loadingState.observe(viewLifecycleOwner, Observer { state ->
+            isContentLoading = false
 
-        mainDisposable = call.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ repoEntries ->
-                    isContentLoading = false
-
-                    if (repoEntries.isNullOrEmpty()) {
-                        Toast.makeText(activity, "No repositories found for $apiQuery",
-                                Toast.LENGTH_SHORT).show()
-                        load_indicator?.visibility = View.GONE
-                        return@subscribe
-                    }
-
-                    if (repoEntries.isNotEmpty()) {
-                        repoAdapter.apply {
-                            addAll(repoEntries)
-                            sort()
-                        }
-                    }
-
-                    if (repoEntries.size < MAXIMUM_LIST_LENGTH) {
-                        isContentLastPage = true
-                    }
-                }, {
+            when (state) {
+                is RepoListViewModel.LoadingState.Loading -> {
+                    commits_recycler_view?.visibility = View.INVISIBLE
+                    load_indicator?.visibility = View.VISIBLE
+                }
+                is RepoListViewModel.LoadingState.Failed -> {
+                    Toast.makeText(activity, "No repositories found for $apiQuery",
+                            Toast.LENGTH_SHORT).show()
+                    load_indicator?.visibility = View.GONE
                     Crashlytics.log(1, "RepoListFragment", "Retrofit error")
-                    Crashlytics.logException(it)
-                }, {
+                    Crashlytics.logException(state.exception)
+                }
+                is RepoListViewModel.LoadingState.Succeeded -> {
                     commits_recycler_view?.visibility = View.VISIBLE
                     load_indicator?.visibility = View.GONE
-                })
+                    processRepos(state.repos)
+                }
+            }
+        })
+    }
+
+    private fun processRepos(repos: List<RepoEntry>?) {
+        val apiQuery = queryPrefs.storedQuery ?: ""
+
+        if (repos.isNullOrEmpty()) {
+            Toast.makeText(activity, "No repositories found for $apiQuery",
+                    Toast.LENGTH_SHORT).show()
+            load_indicator?.visibility = View.GONE
+            return
+        } else {
+            repoAdapter.apply {
+                addAll(repos)
+                sort()
+            }
+        }
+
+        if (repos.size < MAXIMUM_LIST_LENGTH) {
+            isContentLastPage = true
+        }
     }
 
     companion object {

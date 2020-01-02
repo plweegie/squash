@@ -44,11 +44,7 @@ interface GitHubService {
     @GET("repos/{owner}/{repo}/readme")
     suspend fun getReadme(@Path("owner") owner: String,
                           @Path("repo") repo: String): RepoReadme
-
-    @GET("users/{username}/repos")
-    fun getReposObservable(@Path("username") userName: String,
-                         @Query("page") page: Int): Observable<List<RepoEntry>>
-
+    
     @GET("repos/{owner}/{repo}/commits")
     fun getCommitsObservable(@Path("owner") owner: String,
                            @Path("repo") repo: String,
