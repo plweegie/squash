@@ -10,7 +10,7 @@ import java.util.TimeZone;
 public class DateUtils {
 
     public static String changeDateFormats(String date) throws ParseException {
-        DateFormat targetFormat =  new SimpleDateFormat("dd MMMM, yyyy, HH:mm");
+        DateFormat targetFormat =  new SimpleDateFormat("d MMMM, yyyy, HH:mm");
         return targetFormat.format(convertToDate(date));
     }
 

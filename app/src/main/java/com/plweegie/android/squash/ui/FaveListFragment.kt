@@ -94,7 +94,7 @@ class FaveListFragment : Fragment(), FaveAdapter.FaveAdapterOnClickHandler,
     }
 
     override fun onLastCommitClicked(repo: RepoEntry) {
-        val intent = LastCommitDetailsActivity.newIntent(activity,
+        val intent = LastCommitDetailsActivity.newIntent(activity as Context,
                 arrayOf(repo.owner.login, repo.name))
         startActivity(intent)
     }
