@@ -84,7 +84,7 @@ class LastCommitDetailsActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        val call = service.getCommitsObservable(repoProps[0], repoProps[1], 10)
+        val call = service.getCommitsObservable(repoProps[0], repoProps[1], 5)
 
         disposable = call.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
