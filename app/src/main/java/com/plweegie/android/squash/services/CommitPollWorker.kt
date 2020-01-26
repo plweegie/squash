@@ -60,6 +60,8 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Corouti
             processCommits(commits)
             Result.success()
         } catch (e: Exception) {
+            Crashlytics.log("Scheduled work exception")
+            Crashlytics.logException(e)
             Result.failure()
         }
     }
@@ -99,6 +101,7 @@ class CommitPollWorker(val context: Context, params: WorkerParameters) : Corouti
                     .build()
 
             showBackgroundNotif(0, notification)
+            Crashlytics.log("Sending notification")
             queryPrefs.lastResultDate = newLastDate
         }
     }

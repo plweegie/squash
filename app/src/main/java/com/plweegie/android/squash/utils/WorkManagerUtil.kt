@@ -13,7 +13,9 @@ class WorkManagerUtil {
         private const val GITHUB_CHECK_TAG = "github_check"
 
         @JvmStatic
-        fun enqueueWorkRequest(context: Context) {
+        @JvmOverloads
+        fun enqueueWorkRequest(context: Context,
+                               policy: ExistingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.KEEP) {
             val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
@@ -25,7 +27,7 @@ class WorkManagerUtil {
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                     GITHUB_CHECK_TAG,
-                    ExistingPeriodicWorkPolicy.REPLACE,
+                    policy,
                     request)
         }
     }
